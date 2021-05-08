@@ -31,8 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Created Apps
     'products.apps.ProductsConfig',
     'igog.apps.IgogConfig',
+
+    # Third Party Apps
+    'field_history',
+
+    # Default Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
