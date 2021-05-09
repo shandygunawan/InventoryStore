@@ -66,6 +66,25 @@ class IncomingProduct(models.Model):
 class IncomingDeliveryNote(BaseDeliveryNote):
     incoming_id = models.OneToOneField(Incoming, on_delete=models.CASCADE, primary_key=True)
 
+
 #
 # OUTGOING CLASSES
 #
+class Outgoing(BaseIgog):
+    # Many to Many
+    products = models.ManyToManyField(
+        Product,
+        through="OutgoingProduct",
+        through_fields=('outgoing', 'product')
+    )
+
+
+class OutgoingProduct(models.Model):
+    outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    count = models.PositiveBigIntegerField()
+    price_per_count = models.PositiveBigIntegerField()
+
+
+class OutgoingDeliveryNote(BaseDeliveryNote):
+    outgoing_id = models.OneToOneField(Outgoing, on_delete=models.CASCADE, primary_key=True)
