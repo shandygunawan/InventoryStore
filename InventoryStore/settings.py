@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # Created Apps
     'products.apps.ProductsConfig',
     'igog.apps.IgogConfig',
+    'entities.apps.EntitiesConfig',
 
     # Third Party Apps
     'field_history',

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from products.models import Product
+from entities.models import Supplier, Buyer
 
 #
 # BASE CLASSES
@@ -54,14 +55,17 @@ class Incoming(BaseIgog):
         through="IncomingProduct",
         through_fields=('incoming', 'product')
     )
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
 
+class IncomingSupplier(models.Model):
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
+    incoming = models.ForeignKey(Incoming, null=True, on_delete=models.SET_NULL)
 
 class IncomingProduct(models.Model):
     incoming = models.ForeignKey(Incoming, null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
-
 
 class IncomingDeliveryNote(BaseDeliveryNote):
     incoming_id = models.OneToOneField(Incoming, on_delete=models.CASCADE, primary_key=True)
@@ -77,14 +81,13 @@ class Outgoing(BaseIgog):
         through="OutgoingProduct",
         through_fields=('outgoing', 'product')
     )
-
+    buyer = models.ForeignKey(Buyer, null=True, on_delete=models.SET_NULL)
 
 class OutgoingProduct(models.Model):
     outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
-
 
 class OutgoingDeliveryNote(BaseDeliveryNote):
     outgoing_id = models.OneToOneField(Outgoing, on_delete=models.CASCADE, primary_key=True)
