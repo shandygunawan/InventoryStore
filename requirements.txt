@@ -1,0 +1,7 @@
+asgiref==3.3.4
+coverage==5.5
+Django==3.2
+django-field-history==0.8.0
+pytz==2021.1
+sqlparse==0.4.1
+typing-extensions==3.7.4.3
