@@ -1,8 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-  <ul>
-    {% for product in product_list %}
-      <li>{{ product.name }}</li>
-    {% endfor %}
-  </ul>
+  <div class="container-fluid">
+    <h1>Products</h1>
+    <form class="mt-4">
+      <div class="row">
+        <div class="col-4">
+          <select class="form-select form-select-sm">
+            <option selected value="none">Open this select menu</option>
+            <option value="delete">Delete Selected</option>
+          </select>
+        </div>
+        <div class="col">
+          <button class="btn btn-primary">Go</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in product_list %}
+                  <tr>
+                    <th scope="row">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{ product.id }}" id="{{ product.id }}">
+                      </div>
+                    </th>
+                    <td><a href="{% url 'products:products-detail' product.id %}">{{ product.name }}</a></td>
+                    <td>{{ product.stock }}</td>
+                    <td>{{ product.price }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </form>
+  </div>
 {% endblock %}

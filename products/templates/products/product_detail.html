@@ -1,6 +1,67 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-  <h1>{{ product.name }}</h1>
-  <p>{{ product.stock }}</p>
-  <p>{{ product.price }}</p>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="card shadow" style="width: 100%;">
+          <div class="row">
+            <div class="col-md-12 col-lg-4 text-center p-2">
+              <img src="{{ product.image.url }}" class="img-fluid zoom" alt="{{ product.name }}" />
+            </div>
+            <div class="col-md-12 col-lg-8">
+              <div class="card-body">
+                <button class="btn btn-primary float-end">Edit</button>
+                <h3 class="card-title">{{ product.name }}</h3>
+                <table class="table table-borderless table-hover">
+                  <tbody>
+                    <tr>
+                      <td>Stock</td>
+                      <td>{{ product.stock }}</td>
+                    </tr>
+                    <tr>
+                      <td>Price</td>
+                      <td>{{ product.price }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+      <div class="card shadow" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Price</th>
+                  <th scope="col">Date Changed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for history in histories %}
+                  <tr>
+                    <td>{{ history.price }}</td>
+                    <td>{{ history.date_created }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .zoom {
+    transition: transform .2s; /* Animation */
+    margin: 0 auto;
+  }
+
+  .zoom:hover {
+    transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  }
+  </style>
 {% endblock %}
