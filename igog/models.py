@@ -68,7 +68,7 @@ class IncomingProduct(models.Model):
     price_per_count = models.PositiveBigIntegerField()
 
 class IncomingDeliveryNote(BaseDeliveryNote):
-    incoming_id = models.OneToOneField(Incoming, on_delete=models.CASCADE, primary_key=True)
+    incoming = models.OneToOneField(Incoming, on_delete=models.CASCADE, primary_key=True)
 
 
 #
@@ -83,6 +83,10 @@ class Outgoing(BaseIgog):
     )
     buyer = models.ForeignKey(Buyer, null=True, on_delete=models.SET_NULL)
 
+class OutgoingBuyer(models.Model):
+    buyer = models.ForeignKey(Buyer, null=True, on_delete=models.SET_NULL)
+    outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.SET_NULL)
+
 class OutgoingProduct(models.Model):
     outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
@@ -90,4 +94,4 @@ class OutgoingProduct(models.Model):
     price_per_count = models.PositiveBigIntegerField()
 
 class OutgoingDeliveryNote(BaseDeliveryNote):
-    outgoing_id = models.OneToOneField(Outgoing, on_delete=models.CASCADE, primary_key=True)
+    outgoing = models.OneToOneField(Outgoing, on_delete=models.CASCADE, primary_key=True)

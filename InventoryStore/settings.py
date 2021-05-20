@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     'field_history',
+    'django_seed',
 
     # Default Apps
     'django.contrib.admin',
