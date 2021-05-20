@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
   <div class="container-fluid">
     <h1>Products</h1>
@@ -17,11 +18,10 @@
         <div class="col-sm-4">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-search">
-            <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
+            <button class="btn btn-outline-secondary" type="button" id="button-search">
+              <img src="{% static 'products/loupe.png' %}" class="img-fluid"/>
+            </button>
           </div>
-        </div>
-        <div class="col-sm-auto text-end">
-          <button class="btn btn-primary">+</button>
         </div>
       </div>
       <div class="row">
