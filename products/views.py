@@ -1,11 +1,10 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from products.models import Product
 import json
 
 # Generic View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-
 
 class ProductListView(ListView):
     model = Product
@@ -15,6 +14,13 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         return context
 
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('action') == 'delete' and 'selected_products' in request.POST:
+            pks = request.POST.getlist('selected_products')
+            for pk in pks:
+                Product.objects.filter(pk=pk).delete()
+
+        return redirect('products:products-list')
 
 def detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
