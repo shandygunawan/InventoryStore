@@ -57,6 +57,9 @@ class Incoming(BaseIgog):
     )
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
 
+    def __str__(self):
+        return self.datetime.strftime('%Y-%m-%d %H:%M')
+
 class IncomingSupplier(models.Model):
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     incoming = models.ForeignKey(Incoming, null=True, on_delete=models.SET_NULL)

@@ -3,7 +3,6 @@ from products.models import Product
 import json
 
 # Generic View
-from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 class ProductListView(ListView):

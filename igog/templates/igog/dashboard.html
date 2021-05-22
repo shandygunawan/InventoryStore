@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <!-- Chart 1 -->
+    <div class="col-sm-12 col-md-6">
+      <div class="card shadow h-100">
+        <h5 class="card-header">Incoming with Highest Total Price</h5>
+        <div class="card-body">
+          <canvas id="chart1"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- Chart 2 -->
+    <div class="col-sm-12 col-md-6">
+      <div class="card shadow">
+        <h5 class="card-header">Supplier with Highest Incoming Count</h5>
+        <div class="card-body">
+          <canvas id="chart2"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-sm-12 col-md-6">
+        <div class="card shadow">
+          <h5 class="card-header">Incoming Count in the last 5 days</h5>
+          <div class="card-body">
+            <canvas id="chart3"></canvas>
+          </div>
+        </div>
+      </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js"></script>
+  <script>
+
+    // Utils
+    function dynamicColor() {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    }
+
+    // Chart 1
+    var chart1_json = {{ chart1|safe }};
+    var chart1_labels = [];
+    var chart1_data = [];
+    var chart1_colors = []
+    for (i = 0; i < chart1_json.length; i++) {
+        chart1_labels.push(chart1_json[i]['supplier_id']);
+        chart1_data.push(chart1_json[i]['total_price']);
+        chart1_colors.push(dynamicColor());
+    }
+    var chart1_ctx = document.getElementById('chart1');
+    var chart1_canvas = new Chart(chart1_ctx, {
+        type: "bar",
+        data: {
+            labels: chart1_labels,
+            datasets: [{
+                label: 'Price (Rupiah)',
+                data: chart1_data,
+                backgroundColor: chart1_colors
+            }]
+        },
+        options: {
+            maintainAspectRatio: false
+        }
+    })
+
+    // Chart 2
+    var chart2_json = {{ chart2|safe }};
+    var chart2_labels = [];
+    var chart2_data = [];
+    var chart2_colors = []
+    for (i = 0; i < chart2_json.length; i++) {
+        chart2_labels.push(chart2_json[i]['supplier_id']);
+        chart2_data.push(chart2_json[i]['dcount']);
+        chart2_colors.push(dynamicColor());
+    }
+    var chart2_ctx = document.getElementById('chart2');
+    var chart2_canvas = new Chart(chart2_ctx, {
+        type: "doughnut",
+        data: {
+            labels: chart2_labels,
+            datasets: [{
+                label: 'Count',
+                data: chart2_data,
+                backgroundColor: chart2_colors
+            }]
+        },
+        options: {
+            maintainAspectRatio: false
+        }
+    })
+
+    // Chart 3
+    var chart3_json = {{ chart3|safe }};
+    var chart3_labels = [];
+    var chart3_data = [];
+    for (i = 0; i < chart3_json.length; i++) {
+        date_label = (new Date(chart3_json[i]['datetime'])).toDateString()
+        chart3_labels.push(date_label);
+        chart3_data.push(chart3_json[i]['c']);
+    }
+
+    {#console.log(chart3_labels);#}
+    {#console.log(chart3_data);#}
+    var chart3_ctx = document.getElementById('chart3');
+    var chart3_canvas = new Chart(chart3_ctx, {
+        type: "line",
+        data: {
+            labels: chart3_labels,
+            datasets: [{
+                label: 'Incoming',
+                data: chart3_data,
+                borderColor: dynamicColor(),
+                tension: 0.1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false
+        }
+    })
+
+  </script>
+{% endblock %}
