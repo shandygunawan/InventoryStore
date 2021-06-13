@@ -9,13 +9,13 @@ from entities.models import Supplier, Buyer
 
 class BaseIgog(models.Model):
     # Local Variables
-    payment_type_cash = "cash"
-    payment_type_transfer = "transfer"
-    payment_type_giro = "giro"
-    payment_type_choices = [
-        (payment_type_cash, "Cash"),
-        (payment_type_transfer, "Transfer"),
-        (payment_type_giro, "Giro")
+    payment_method_cash = "cash"
+    payment_method_transfer = "transfer"
+    payment_method_giro = "giro"
+    payment_method_choices = [
+        (payment_method_cash, "Cash"),
+        (payment_method_transfer, "Transfer"),
+        (payment_method_giro, "Giro")
     ]
 
     payment_status_notstarted = "not_started"
@@ -29,8 +29,7 @@ class BaseIgog(models.Model):
 
     # Fields
     datetime = models.DateTimeField(default=timezone.now)
-    total_price = models.PositiveBigIntegerField()
-    payment_type = models.TextField(choices=payment_type_choices, default=payment_type_cash)
+    payment_method = models.TextField(choices=payment_method_choices, default=payment_method_cash)
     payment_status = models.TextField(choices=payment_status_choices, default=payment_status_notstarted)
     due_date = models.DateField(default=timezone.now, null=True)
 
@@ -60,10 +59,6 @@ class Incoming(BaseIgog):
     def __str__(self):
         return self.datetime.strftime('%Y-%m-%d %H:%M')
 
-class IncomingSupplier(models.Model):
-    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
-    incoming = models.ForeignKey(Incoming, null=True, on_delete=models.SET_NULL)
-
 class IncomingProduct(models.Model):
     incoming = models.ForeignKey(Incoming, null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
@@ -86,9 +81,6 @@ class Outgoing(BaseIgog):
     )
     buyer = models.ForeignKey(Buyer, null=True, on_delete=models.SET_NULL)
 
-class OutgoingBuyer(models.Model):
-    buyer = models.ForeignKey(Buyer, null=True, on_delete=models.SET_NULL)
-    outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.SET_NULL)
 
 class OutgoingProduct(models.Model):
     outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.SET_NULL)

@@ -28,24 +28,27 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              IGOG
+              List
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Incoming Goods</a></li>
-              <li><a class="dropdown-item" href="#">Outgoing Goods</a></li>
+              <li><a class="dropdown-item" href="#">Barang Masuk</a></li>
+              <li><a class="dropdown-item" href="#">Barang Keluar</a></li>
+              <li><a class="dropdown-item" href="{% url 'entities:supplier-all' %}">Supplier</a></li>
+              <li><a class="dropdown-item" href="#">Pembeli</a></li>
+              <li><a class="dropdown-item" href="{% url 'products:products-all' %}">Produk</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Entities
+              Input
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Barang Masuk</a></li>
+              <li><a class="dropdown-item" href="#">Barang Keluar</a></li>
               <li><a class="dropdown-item" href="#">Supplier</a></li>
-              <li><a class="dropdown-item" href="#">Buyer</a></li>
+              <li><a class="dropdown-item" href="#">Pembeli</a></li>
+              <li><a class="dropdown-item" href="#">Produk</a></li>
             </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'products:products-list' %}">Products</a>
           </li>
         </ul>
       </div>

@@ -1,29 +1,26 @@
-from django.shortcuts import get_object_or_404, render, redirect, reverse
-from products.models import Product
 import json
 
-# Generic View
-from django.views.generic.list import ListView
+from django.http import JsonResponse
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models.fields.files import ImageFieldFile
 
-class ProductListView(ListView):
-    model = Product
-    paginate_by = 10
+from products.models import Product
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
-    def post(self, request, *args, **kwargs):
-        if request.POST.get('action') == 'delete' and 'selected_products' in request.POST:
-            pks = request.POST.getlist('selected_products')
-            for pk in pks:
-                Product.objects.filter(pk=pk).delete()
+class ImageFieldEncoder(DjangoJSONEncoder):
+    def default(self, o):
+        if isinstance(o, ImageFieldFile):
+            return str(o)
+        else:
+            return super().default(o)
 
-        return redirect('products:products-list')
 
-def detail(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-    # histories = list(product.get_price_history().values())
+def get_all(request):
+    products = list(Product.objects.all().values("id", "name", "stock", "price"))
+    return JsonResponse(products, safe=False)
+
+def get_detail(request, product_id):
+    product = Product.objects.get(pk=product_id)
     histories_raw = product.get_price_history().order_by('-date_created').values()
     histories = []
     for history in histories_raw:
@@ -31,8 +28,13 @@ def detail(request, product_id):
             'price': json.loads(history['serialized_data'])[0]['fields']['price'],
             'date_created': history['date_created']
         })
-    context = {
-        'product': product,
+    to_return = {
+        'product': {
+            "name": product.name,
+            "price": product.price,
+            "stock": product.stock,
+            "image": product.image.url
+        },
         'histories': histories
     }
-    return render(request, 'products/product_detail.html', context)
+    return JsonResponse(to_return, safe=False)

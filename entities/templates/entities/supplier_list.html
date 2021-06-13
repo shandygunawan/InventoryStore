@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <h1>Supplier</h1>
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Nama</th>
+              <th scope="col">No. Telp</th>
+              <th scope="col">Email</th>
+              <th scope="col">Alamat</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for supplier in supplier_list %}
+              <tr>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.phone_number }}</td>
+                <td>{{ supplier.email }}</td>
+                <td>{{ supplier.address }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

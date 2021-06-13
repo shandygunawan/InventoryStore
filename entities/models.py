@@ -5,7 +5,7 @@ from django.db import models
 #
 class BaseEntity(models.Model):
     name = models.TextField()
-    phone_number = models.TextField()
+    phone_number = models.PositiveBigIntegerField()
 
     def __str__(self):
         return self.name
@@ -23,5 +23,5 @@ class Supplier(BaseEntity):
 # Buyer
 #
 class Buyer(BaseEntity):
-    num_ktp = models.TextField()
-    num_npwp = models.TextField()
+    num_ktp = models.PositiveBigIntegerField()
+    num_npwp = models.PositiveBigIntegerField()

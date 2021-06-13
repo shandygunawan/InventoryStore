@@ -9,7 +9,7 @@ class IncomingProductInline(admin.TabularInline):
     extra = 1
 
 class IncomingAdmin(admin.ModelAdmin):
-    list_display = ('datetime', 'total_price', 'payment_type', 'payment_status', 'due_date')
+    list_display = ('datetime', 'payment_method', 'payment_status', 'due_date')
     inlines = [IncomingProductInline]
 
 class IncomingDeliveryNoteAdmin(admin.ModelAdmin):
@@ -24,7 +24,7 @@ class OutgoingProductInline(admin.TabularInline):
     extra = 1
 
 class OutgoingAdmin(admin.ModelAdmin):
-    list_display = ('datetime', 'total_price', 'payment_type', 'payment_status', 'due_date')
+    list_display = ('datetime', 'payment_method', 'payment_status', 'due_date')
     inlines = [OutgoingProductInline]
 
 class OutgoingDeliveryNoteAdmin(admin.ModelAdmin):

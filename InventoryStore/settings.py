@@ -26,11 +26,6 @@ SECRET_KEY = 'django-insecure-x0pet=p1us68j7wduu4*ou!ss2m^vp0thk&6w5^_5eyks$j)cc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-
-]
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +37,7 @@ INSTALLED_APPS = [
     # Third Party Apps
     'field_history',
     'django_seed',
+    'corsheaders',
 
     # Default Apps
     'django.contrib.admin',
@@ -53,6 +49,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -119,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 
@@ -142,3 +141,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MEDIA
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CSRF
+CSRF_COOKIE_NAME = "XCSRF-TOKEN"

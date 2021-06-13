@@ -2,14 +2,14 @@
 {% load static %}
 {% block content %}
   <div class="container-fluid">
-    <h1>Products</h1>
+    <h1>Produk</h1>
     <form class="mt-4" method="post">
       {% csrf_token %}
       <div class="row">
         <div class="col-sm-3">
           <select class="form-select form-select" name="action">
-            <option selected value="none">Action</option>
-            <option value="delete">Delete Selected</option>
+            <option selected value="none">Aksi</option>
+            <option value="delete">Hapus Terpilih</option>
           </select>
         </div>
         <div class="col">
@@ -17,7 +17,7 @@
         </div>
         <div class="col-sm-4">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-search">
+            <input type="text" class="form-control" placeholder="Cari" aria-label="Search" aria-describedby="button-search">
             <button class="btn btn-outline-secondary" type="button" id="button-search">
               <img src="{% static 'products/loupe.png' %}" class="img-fluid"/>
             </button>
@@ -26,13 +26,13 @@
       </div>
       <div class="row">
         <div class="col-12">
-            <table class="table table-striped">
+            <table class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Price</th>
+                  <th scope="col">Nama</th>
+                  <th scope="col">Stok</th>
+                  <th scope="col">Harga</th>
                 </tr>
               </thead>
               <tbody>
