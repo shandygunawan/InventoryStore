@@ -1,19 +1,33 @@
-from django.shortcuts import render
+from rest_framework import generics
+
 from entities.models import Supplier, Buyer
-from django.http import JsonResponse
-
-# Generic View
-from django.views.generic.list import ListView
+from entities.serializers import SupplierSerializer, BuyerSerializer
 
 
-def get_supplier_all(request):
-    suppliers = list(Supplier.objects.all().values())
-    return JsonResponse(suppliers, safe=False)
+class SupplierList(generics.ListCreateAPIView):
+    """
+    List all supplier, or create a new supplier.
+    """
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
 
-def get_supplier_incoming(request):
-    suppliers = list(Supplier.objects.all().values("id", "name"))
-    return JsonResponse(suppliers, safe=False)
+class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or delete a supplier instance
+    """
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
 
-def get_buyer_all(request):
-    buyers = list(Buyer.objects.all().values())
-    return JsonResponse(buyers, safe=False)
+class BuyerList(generics.ListCreateAPIView):
+    """
+    List all buyer, or create a new buyer.
+    """
+    queryset = Buyer.objects.all()
+    serializer_class = BuyerSerializer
+
+class BuyerDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or delete a buyer instance
+    """
+    queryset = Buyer.objects.all()
+    serializer_class = BuyerSerializer

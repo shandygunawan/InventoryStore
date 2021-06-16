@@ -7,6 +7,9 @@ class BaseEntity(models.Model):
     name = models.TextField()
     phone_number = models.PositiveBigIntegerField()
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
