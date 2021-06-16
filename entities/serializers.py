@@ -7,6 +7,11 @@ class SupplierSerializer(serializers.ModelSerializer):
         model = Supplier
         fields = ['id', 'name', 'phone_number', 'email', 'address']
 
+class SupplierIgogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Supplier
+        fields = ['id', 'name']
+
 class BuyerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Buyer

@@ -1,7 +1,11 @@
 from rest_framework import generics
 
 from entities.models import Supplier, Buyer
-from entities.serializers import SupplierSerializer, BuyerSerializer
+from entities.serializers import (
+    SupplierSerializer,
+    SupplierIgogSerializer,
+    BuyerSerializer
+)
 
 
 class SupplierList(generics.ListCreateAPIView):
@@ -11,6 +15,15 @@ class SupplierList(generics.ListCreateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
 
+
+class SupplierIgogList(generics.ListAPIView):
+    """
+    List all supplier only with id and name fields
+    """
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierIgogSerializer
+
+
 class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or delete a supplier instance
@@ -18,12 +31,14 @@ class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
 
+
 class BuyerList(generics.ListCreateAPIView):
     """
     List all buyer, or create a new buyer.
     """
     queryset = Buyer.objects.all()
     serializer_class = BuyerSerializer
+
 
 class BuyerDetail(generics.RetrieveUpdateDestroyAPIView):
     """
