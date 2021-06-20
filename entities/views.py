@@ -4,7 +4,8 @@ from entities.models import Supplier, Buyer
 from entities.serializers import (
     SupplierSerializer,
     SupplierIgogSerializer,
-    BuyerSerializer
+    BuyerSerializer,
+    BuyerIgogSerializer
 )
 
 
@@ -38,6 +39,14 @@ class BuyerList(generics.ListCreateAPIView):
     """
     queryset = Buyer.objects.all()
     serializer_class = BuyerSerializer
+
+
+class BuyerIgogList(generics.ListAPIView):
+    """
+    List all supplier only with id and name fields
+    """
+    queryset = Buyer.objects.all()
+    serializer_class = BuyerIgogSerializer
 
 
 class BuyerDetail(generics.RetrieveUpdateDestroyAPIView):

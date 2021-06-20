@@ -16,3 +16,8 @@ class BuyerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Buyer
         fields = ['id', 'name', 'phone_number', 'num_ktp', 'num_npwp']
+
+class BuyerIgogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Buyer
+        fields = ['id', 'name']
