@@ -12,13 +12,14 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from entities.models import Supplier
+from entities.models import Supplier, Buyer
 from products.models import Product
 from .models import Incoming, IncomingProduct, Outgoing, OutgoingProduct
 from igog.serializers import (
     IncomingListSerializer,
     IncomingDetailSerializer,
-    OutgoingListSerializer
+    OutgoingListSerializer,
+    OutgoingDetailSerializer
 )
 
 #
@@ -83,6 +84,41 @@ class OutgoingList(APIView):
         outgoings = Outgoing.objects.all()
         serializer = OutgoingListSerializer(outgoings, many=True)
         return Response(serializer.data)
+
+    def post(self, request, format=None):
+        req = json.loads(request.body)
+        outgoing_date = datetime.strptime(req['outgoing_date'], "%Y-%m-%d").date()
+        outgoing_time = datetime.strptime(req['outgoing_time'], "%H:%M").time()
+        outgoing_datetime = datetime.combine(outgoing_date, outgoing_time)
+        duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
+        buyer = Buyer.objects.get(pk=req['buyer'])
+        outgoing = Outgoing(
+            datetime=outgoing_datetime,
+            payment_method=req['payment_method'],
+            payment_status=req['payment_status'],
+            due_date=duedate_date,
+            buyer=buyer
+        )
+        outgoing.save()
+
+        for req_product in req['products']:
+            product = Product.objects.get(pk=req_product['id'])
+            outgoing_product = OutgoingProduct(
+                product=product,
+                outgoing=outgoing,
+                count=req_product['count'],
+                price_per_count=req_product['price_per_count']
+            )
+            outgoing_product.save()
+
+        return JsonResponse({
+            "status": "success",
+            "message": "Outgoing creating successful."
+        }, safe=False)
+
+class OutgoingDetail(generics.RetrieveAPIView):
+    queryset = Outgoing.objects.all()
+    serializer_class = OutgoingDetailSerializer
 
 def dashboard(request):
     # == Queries ==

@@ -7,10 +7,10 @@ from igog.models import Incoming, IncomingProduct, Outgoing, OutgoingProduct
 from products.serializers import ProductSerializer
 from entities.models import Supplier
 from products.models import Product
-from entities.serializers import SupplierSerializer
+from entities.serializers import SupplierSerializer, BuyerSerializer
 
 
-class IncomingProductSerializer(serializers.ModelSerializer):
+class IgogProductSerializer(serializers.ModelSerializer):
     product = serializers.ReadOnlyField(source="product.name")
 
     class Meta:
@@ -27,7 +27,7 @@ class IncomingListSerializer(serializers.ModelSerializer):
 
 
 class IncomingDetailSerializer(serializers.ModelSerializer):
-    products = IncomingProductSerializer(source="incomingproduct_set", many=True)
+    products = IgogProductSerializer(source="incomingproduct_set", many=True)
     supplier = SupplierSerializer(read_only=True)
 
     class Meta:
@@ -41,3 +41,12 @@ class OutgoingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Outgoing
         fields = ['id', 'datetime', 'payment_method', 'payment_status', 'due_date', 'buyer_name']
+
+
+class OutgoingDetailSerializer(serializers.ModelSerializer):
+    products = IgogProductSerializer(source="outgoingproduct_set", many=True)
+    buyer = BuyerSerializer(read_only=True)
+
+    class Meta:
+        model = Outgoing
+        fields = ['id', 'datetime', 'payment_method', 'payment_status', 'due_date', 'buyer', 'products']
