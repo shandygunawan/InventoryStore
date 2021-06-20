@@ -7,11 +7,18 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 from entities.models import Supplier
 from products.models import Product
 from .models import Incoming, IncomingProduct
-
-
+from igog.serializers import (
+    IncomingListSerializer,
+    IncomingDetailSerializer
+)
 
 #
 # UTILS
@@ -23,40 +30,50 @@ def toJsonAnnotate(chart):
     return json.dumps(list(chart), cls=DjangoJSONEncoder)
 
 
-#
-# VIEWS
-#
-@csrf_exempt
-def create_incoming(request):
-    req = json.loads(request.body)
-    incoming_date = datetime.strptime(req['incoming_date'], "%Y-%m-%d").date()
-    incoming_time = datetime.strptime(req['incoming_time'], "%H:%M").time()
-    incoming_datetime = datetime.combine(incoming_date, incoming_time)
-    duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
-    supplier = Supplier.objects.get(pk=req['supplier'])
-    incoming = Incoming(
-        datetime=incoming_datetime,
-        payment_method=req['payment_method'],
-        payment_status=req['payment_status'],
-        due_date=duedate_date,
-        supplier=supplier
-    )
-    incoming.save()
 
-    for req_product in req['products']:
-        product = Product.objects.get(pk=req_product['id'])
-        incoming_product = IncomingProduct(
-            product=product,
-            incoming=incoming,
-            count=req_product['stock'],
-            price_per_count=req_product['price']
+class IncomingList(APIView):
+    queryset = Incoming.objects.all()
+
+    def get(self, request, format=None):
+        incomings = Incoming.objects.all()
+        serializer = IncomingListSerializer(incomings, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        req = json.loads(request.body)
+        incoming_date = datetime.strptime(req['incoming_date'], "%Y-%m-%d").date()
+        incoming_time = datetime.strptime(req['incoming_time'], "%H:%M").time()
+        incoming_datetime = datetime.combine(incoming_date, incoming_time)
+        duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
+        supplier = Supplier.objects.get(pk=req['supplier'])
+        incoming = Incoming(
+            datetime=incoming_datetime,
+            payment_method=req['payment_method'],
+            payment_status=req['payment_status'],
+            due_date=duedate_date,
+            supplier=supplier
         )
-        incoming_product.save()
+        incoming.save()
 
-    return JsonResponse({
-        "status": "success",
-        "message": "Incoming creating successful."
-    }, safe=False)
+        for req_product in req['products']:
+            product = Product.objects.get(pk=req_product['id'])
+            incoming_product = IncomingProduct(
+                product=product,
+                incoming=incoming,
+                count=req_product['count'],
+                price_per_count=req_product['price_per_count']
+            )
+            incoming_product.save()
+
+        return JsonResponse({
+            "status": "success",
+            "message": "Incoming creating successful."
+        }, safe=False)
+
+
+class IncomingDetail(generics.RetrieveAPIView):
+    queryset = Incoming.objects.all()
+    serializer_class = IncomingDetailSerializer
 
 def dashboard(request):
     # == Queries ==

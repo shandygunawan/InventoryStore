@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from products.models import Product
 from entities.models import Supplier, Buyer
+from datetime import date
 
 #
 # BASE CLASSES
@@ -31,7 +32,7 @@ class BaseIgog(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     payment_method = models.TextField(choices=payment_method_choices, default=payment_method_cash)
     payment_status = models.TextField(choices=payment_status_choices, default=payment_status_notstarted)
-    due_date = models.DateField(default=timezone.now, null=True)
+    due_date = models.DateField(null=True)
 
 
 class BaseDeliveryNote(models.Model):

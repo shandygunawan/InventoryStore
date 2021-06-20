@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from products.models import Product
 from products.serializers import ProductSerializer
 
-class ProductList(generics.ListAPIView):
+class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -32,7 +32,7 @@ class ProductDetail(APIView):
                 "name": product.name,
                 "price": product.price,
                 "stock": product.stock,
-                "image": product.image.url
+                "image": "http://localhost:8000" + product.image.url
             },
             'histories': histories
         }
