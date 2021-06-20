@@ -14,10 +14,11 @@ from rest_framework.response import Response
 
 from entities.models import Supplier
 from products.models import Product
-from .models import Incoming, IncomingProduct
+from .models import Incoming, IncomingProduct, Outgoing, OutgoingProduct
 from igog.serializers import (
     IncomingListSerializer,
-    IncomingDetailSerializer
+    IncomingDetailSerializer,
+    OutgoingListSerializer
 )
 
 #
@@ -74,6 +75,14 @@ class IncomingList(APIView):
 class IncomingDetail(generics.RetrieveAPIView):
     queryset = Incoming.objects.all()
     serializer_class = IncomingDetailSerializer
+
+class OutgoingList(APIView):
+    queryset = Outgoing.objects.all()
+
+    def get(self, request, format=None):
+        outgoings = Outgoing.objects.all()
+        serializer = OutgoingListSerializer(outgoings, many=True)
+        return Response(serializer.data)
 
 def dashboard(request):
     # == Queries ==
