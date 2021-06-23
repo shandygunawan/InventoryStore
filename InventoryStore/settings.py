@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'igog.apps.IgogConfig',
     'entities.apps.EntitiesConfig',
+    'accounts.apps.AuthConfig',
 
     # Third Party Apps
     'field_history',
@@ -146,7 +147,7 @@ MEDIA_URL = '/media/'
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
+    # Use Django's standard `django.contrib.accounts` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'

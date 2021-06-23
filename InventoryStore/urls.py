@@ -23,14 +23,14 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from auth.views import CustomTokenObtainPairView
+from accounts.views import CustomTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('igog/', include('igog.urls')),
     path('products/', include('products.urls')),
     path('entities/', include('entities.urls')),
-    path('api-auth/', include('rest_framework.urls')),
+    path('api-accounts/', include('rest_framework.urls')),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

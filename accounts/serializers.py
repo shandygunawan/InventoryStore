@@ -1,5 +1,5 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from accounts.models import UserProfile
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -9,6 +9,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['access'] = str(refresh.access_token)
 
         # Add extra responses here
-        data['username'] = self.user.username
+        profile = UserProfile.objects.get(user=self.user)
+        data['role'] = profile.role
+
         # data['groups'] = self.user.groups.values_list('name', flat=True)
         return data
