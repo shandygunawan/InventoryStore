@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-x0pet=p1us68j7wduu4*ou!ss2m^vp0thk&6w5^_5eyks$j)cc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+AUTH_USER_MODEL = 'accounts.User'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -33,7 +35,7 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'igog.apps.IgogConfig',
     'entities.apps.EntitiesConfig',
-    'accounts.apps.AuthConfig',
+    'accounts.apps.AccountsConfig',
 
     # Third Party Apps
     'field_history',
@@ -150,7 +152,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.accounts` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -159,6 +161,3 @@ REST_FRAMEWORK = {
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
-
-# CSRF
-CSRF_COOKIE_NAME = "XCSRF-TOKEN"

@@ -1,9 +1,4 @@
 from django.contrib import admin
-from accounts.models import UserProfile
+from accounts.models import User
 
-
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role')
-
-
-admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(User)

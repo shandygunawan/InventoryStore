@@ -1,16 +1,44 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from accounts.models import UserProfile
+from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-        data['refresh'] = str(refresh)
-        data['access'] = str(refresh.access_token)
+from accounts.models import User
 
-        # Add extra responses here
-        profile = UserProfile.objects.get(user=self.user)
-        data['role'] = profile.role
+class AccountLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+    role = serializers.CharField(read_only=True)
 
-        # data['groups'] = self.user.groups.values_list('name', flat=True)
-        return data
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+
+    def validate(self, data):
+        username = data['username']
+        password = data['password']
+
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            raise serializers.ValidationError("Invalid login credentials")
+
+        try:
+            refresh = RefreshToken.for_user(user)
+            refresh_token = str(refresh)
+            access_token = str(refresh.access_token)
+
+            validation = {
+                "access": access_token,
+                "refresh": refresh_token,
+                "username": user.username,
+                "role": user.role
+            }
+
+            return validation
+
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Invalid login credentials")
