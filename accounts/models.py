@@ -11,13 +11,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # ROLES
     ADMIN = "admin"
-    MANAGER = "manager"
-    EMPLOYEE = "employee"
+    INPUT = "input"
+    LOOK = "look"
 
     ROLE_CHOICES = (
         (ADMIN, "Admin"),
-        (MANAGER, "Manager"),
-        (EMPLOYEE, "Employee")
+        (INPUT, "input"),
+        (LOOK, "look")
     )
 
     class Meta:
@@ -25,9 +25,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'users'
 
     # FIELDS
-    uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4(), verbose_name='Public Identifier')
+    # uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4(), verbose_name='Public Identifier')
     username = models.TextField(unique=True)
-    role = models.TextField(choices=ROLE_CHOICES, default="employee")
+    role = models.TextField(choices=ROLE_CHOICES, default="look")
     salary = models.PositiveBigIntegerField(null=True)
     created_date = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(_('staff status'), default=False)

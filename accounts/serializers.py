@@ -10,6 +10,9 @@ class AccountListSerializer(serializers.ModelSerializer):
         fields = ("username", "role")
 
 class AccountRegistrationSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
     class Meta:
         model = User
         fields = ("username", "password")
