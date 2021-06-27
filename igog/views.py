@@ -5,7 +5,6 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import generics
 from rest_framework import status
@@ -36,41 +35,51 @@ def toJsonAnnotate(chart):
 class IncomingList(APIView):
     queryset = Incoming.objects.all()
 
-    def get(self, request, format=None):
+    def get(self, request):
         incomings = Incoming.objects.all()
         serializer = IncomingListSerializer(incomings, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        req = json.loads(request.body)
-        incoming_date = datetime.strptime(req['incoming_date'], "%Y-%m-%d").date()
-        incoming_time = datetime.strptime(req['incoming_time'], "%H:%M").time()
-        incoming_datetime = datetime.combine(incoming_date, incoming_time)
-        duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
-        supplier = Supplier.objects.get(pk=req['supplier'])
-        incoming = Incoming(
-            datetime=incoming_datetime,
-            payment_method=req['payment_method'],
-            payment_status=req['payment_status'],
-            due_date=duedate_date,
-            supplier=supplier
-        )
-        incoming.save()
-
-        for req_product in req['products']:
-            product = Product.objects.get(pk=req_product['id'])
-            incoming_product = IncomingProduct(
-                product=product,
-                incoming=incoming,
-                count=req_product['count'],
-                price_per_count=req_product['price_per_count']
+    def post(self, request):
+        try:
+            req = json.loads(request.body)
+            incoming_date = datetime.strptime(req['incoming_date'], "%Y-%m-%d").date()
+            incoming_time = datetime.strptime(req['incoming_time'], "%H:%M").time()
+            incoming_datetime = datetime.combine(incoming_date, incoming_time)
+            duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
+            supplier = Supplier.objects.get(pk=req['supplier'])
+            incoming = Incoming(
+                datetime=incoming_datetime,
+                payment_method=req['payment_method'],
+                payment_status=req['payment_status'],
+                due_date=duedate_date,
+                supplier=supplier
             )
-            incoming_product.save()
+            incoming.save()
 
-        return JsonResponse({
-            "status": "success",
-            "message": "Incoming creating successful."
-        }, safe=False)
+            for req_product in req['products']:
+                product = Product.objects.get(pk=req_product['id'])
+                incoming_product = IncomingProduct(
+                    product=product,
+                    incoming=incoming,
+                    count=req_product['count'],
+                    price_per_count=req_product['price_per_count']
+                )
+                incoming_product.save()
+
+            response = {
+                "success": True,
+                "status_code": status.HTTP_201_CREATED,
+                "message": "Incoming created"
+            }
+            return Response(response, status=status.HTTP_201_CREATED)
+        except:
+            response = {
+                "success": False,
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": "Outgoing Created Fail"
+            }
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class IncomingDetail(generics.RetrieveAPIView):
@@ -80,41 +89,53 @@ class IncomingDetail(generics.RetrieveAPIView):
 class OutgoingList(APIView):
     queryset = Outgoing.objects.all()
 
-    def get(self, request, format=None):
+    def get(self, request):
         outgoings = Outgoing.objects.all()
         serializer = OutgoingListSerializer(outgoings, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        req = json.loads(request.body)
-        outgoing_date = datetime.strptime(req['outgoing_date'], "%Y-%m-%d").date()
-        outgoing_time = datetime.strptime(req['outgoing_time'], "%H:%M").time()
-        outgoing_datetime = datetime.combine(outgoing_date, outgoing_time)
-        duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
-        buyer = Buyer.objects.get(pk=req['buyer'])
-        outgoing = Outgoing(
-            datetime=outgoing_datetime,
-            payment_method=req['payment_method'],
-            payment_status=req['payment_status'],
-            due_date=duedate_date,
-            buyer=buyer
-        )
-        outgoing.save()
-
-        for req_product in req['products']:
-            product = Product.objects.get(pk=req_product['id'])
-            outgoing_product = OutgoingProduct(
-                product=product,
-                outgoing=outgoing,
-                count=req_product['count'],
-                price_per_count=req_product['price_per_count']
+    def post(self, request):
+        try:
+            req = json.loads(request.body)
+            outgoing_date = datetime.strptime(req['outgoing_date'], "%Y-%m-%d").date()
+            outgoing_time = datetime.strptime(req['outgoing_time'], "%H:%M").time()
+            outgoing_datetime = datetime.combine(outgoing_date, outgoing_time)
+            duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
+            buyer = Buyer.objects.get(pk=req['buyer'])
+            outgoing = Outgoing(
+                datetime=outgoing_datetime,
+                payment_method=req['payment_method'],
+                payment_status=req['payment_status'],
+                due_date=duedate_date,
+                buyer=buyer
             )
-            outgoing_product.save()
+            outgoing.save()
 
-        return JsonResponse({
-            "status": "success",
-            "message": "Outgoing creating successful."
-        }, safe=False)
+            for req_product in req['products']:
+                product = Product.objects.get(pk=req_product['id'])
+                outgoing_product = OutgoingProduct(
+                    product=product,
+                    outgoing=outgoing,
+                    count=req_product['count'],
+                    price_per_count=req_product['price_per_count']
+                )
+                outgoing_product.save()
+
+            response = {
+                "success": True,
+                "status_code": status.HTTP_201_CREATED,
+                "message": "Outgoing created"
+            }
+            return Response(response, status=status.HTTP_201_CREATED)
+        except:
+            response = {
+                "success": False,
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": "Outgoing Created Fail"
+            }
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 class OutgoingDetail(generics.RetrieveAPIView):
     queryset = Outgoing.objects.all()

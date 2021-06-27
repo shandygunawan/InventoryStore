@@ -1,11 +1,12 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 #
 # BASE CLASS
 #
 class BaseEntity(models.Model):
     name = models.TextField()
-    phone_number = models.PositiveBigIntegerField()
+    phone_number = PhoneNumberField()
 
     class Meta:
         ordering = ['name']

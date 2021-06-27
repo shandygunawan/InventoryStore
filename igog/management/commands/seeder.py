@@ -15,7 +15,7 @@ from igog.models import Outgoing, OutgoingProduct, OutgoingDeliveryNote
 
 class Command(BaseCommand):
     help = "Seed Database"
-    AMOUNT = 100
+    AMOUNT = 1000
 
     def handle(self, *args, **options):
         print('Setting up seed and faker...')
@@ -50,13 +50,11 @@ class Command(BaseCommand):
         print("Seeding products...")
         for i in range(self.AMOUNT):
             p = Product(
-                name=fake.vehicle_year_make_model(),
+                name=fake.vehicle_make_model(),
                 stock=randint(0, 100),
                 price=randint(100000, 100000000)
             )
             p.save()
 
-        print("Seeding Incoming...")
-
-
-        print("Seeding Outgoing...")
+        # print("Seeding Incoming...")
+        # print("Seeding Outgoing...")

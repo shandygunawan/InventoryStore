@@ -29,7 +29,6 @@ DEBUG = True
 AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
-
 INSTALLED_APPS = [
     # Created Apps
     'products.apps.ProductsConfig',
@@ -38,10 +37,11 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
 
     # Third Party Apps
+    'rest_framework',
     'field_history',
     'django_seed',
     'corsheaders',
-    'rest_framework',
+    'phonenumber_field',
 
 
     # Default Apps
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

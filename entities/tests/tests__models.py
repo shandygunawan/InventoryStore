@@ -9,7 +9,7 @@ class SupplierTestCase(TestCase):
     # Test Create
     def test_supplier_create_normal(self):
         supplier = Supplier.objects.create(name="test_supplier_create_normal",
-                                           phone_number=212345664,
+                                           phone_number="08989898797",
                                            email="test_supplier@test.com",
                                            address="Jl. Test No. 1")
         supplier.save()
@@ -28,7 +28,7 @@ class SupplierTestCase(TestCase):
     def test_supplier_update_normal(self):
         # Create
         supplier = Supplier.objects.create(name="test_supplier_update_normal",
-                                           phone_number="0212345664",
+                                           phone_number="08989898797",
                                            email="test_supplier@test.com",
                                            address="Jl. Test No. 1")
         supplier.save()
@@ -44,7 +44,7 @@ class SupplierTestCase(TestCase):
     def test_supplier_delete_normal(self):
         # Create
         supplier = Supplier.objects.create(name="test_supplier_delete_normal",
-                                           phone_number="0212345664",
+                                           phone_number="08989898797",
                                            email="test_supplier@test.com",
                                            address="Jl. Test No. 1")
         supplier.save()
