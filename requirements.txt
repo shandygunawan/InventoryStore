@@ -4,6 +4,7 @@ Django==3.2
 django-cors-headers==3.7.0
 django-field-history==0.8.0
 django-filter==2.4.0
+django-phonenumber-field==5.2.0
 django-seed==0.2.2
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.7.1
@@ -11,6 +12,7 @@ Faker==8.2.0
 faker-vehicle==0.2.0
 importlib-metadata==4.5.0
 Markdown==3.3.4
+phonenumbers==8.12.26
 Pillow==8.2.0
 PyJWT==2.1.0
 python-dateutil==2.8.1
