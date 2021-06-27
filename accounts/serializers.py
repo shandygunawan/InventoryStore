@@ -4,6 +4,20 @@ from django.contrib.auth import authenticate
 
 from accounts.models import User
 
+class AccountListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "role")
+
+class AccountRegistrationSerializer(serializers.Serializer):
+    class Meta:
+        model = User
+        fields = ("username", "password")
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
 class AccountLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -42,3 +56,4 @@ class AccountLoginSerializer(serializers.Serializer):
 
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid login credentials")
+
