@@ -10,12 +10,12 @@ from django_seed import Seed
 
 from products.models import Product
 from entities.models import Buyer, Supplier
-from igog.models import Incoming, IncomingProduct, IncomingDeliveryNote
-from igog.models import Outgoing, OutgoingProduct, OutgoingDeliveryNote
+from igog.models import Incoming, IncomingProduct
+from igog.models import Outgoing, OutgoingProduct
 
 class Command(BaseCommand):
     help = "Seed Database"
-    AMOUNT = 1000
+    AMOUNT = 100
 
     def handle(self, *args, **options):
         print('Setting up seed and faker...')
@@ -50,7 +50,7 @@ class Command(BaseCommand):
         print("Seeding products...")
         for i in range(self.AMOUNT):
             p = Product(
-                name=fake.vehicle_make_model(),
+                name=fake.vehicle_year_make_model_cat(),
                 stock=randint(0, 100),
                 price=randint(100000, 100000000)
             )

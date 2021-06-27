@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 from rest_framework import serializers
 
 from igog.models import Incoming, IncomingProduct, Outgoing, OutgoingProduct
-from products.serializers import ProductSerializer
-from entities.models import Supplier
-from products.models import Product
 from entities.serializers import SupplierSerializer, BuyerSerializer
 
 
@@ -23,7 +20,7 @@ class IncomingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Incoming
-        fields = ['id', 'datetime', 'payment_method', 'payment_status', 'due_date', 'supplier_name']
+        fields = ['id', 'invoice', 'datetime', 'payment_method', 'payment_status', 'due_date', 'supplier_name']
 
 
 class IncomingDetailSerializer(serializers.ModelSerializer):
@@ -32,7 +29,8 @@ class IncomingDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Incoming
-        fields = ['id', 'datetime', 'payment_method', 'payment_status', 'due_date', 'supplier', 'products']
+        fields = ['id', 'invoice', 'delivery_note',
+                  'datetime', 'payment_method', 'payment_status', 'due_date', 'note', 'supplier', 'products']
 
 
 class OutgoingListSerializer(serializers.ModelSerializer):
@@ -40,7 +38,7 @@ class OutgoingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Outgoing
-        fields = ['id', 'datetime', 'payment_method', 'payment_status', 'due_date', 'buyer_name']
+        fields = ['id', 'invoice', 'datetime', 'payment_method', 'payment_status', 'due_date', 'buyer_name']
 
 
 class OutgoingDetailSerializer(serializers.ModelSerializer):
@@ -49,4 +47,4 @@ class OutgoingDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Outgoing
-        fields = ['id', 'datetime', 'payment_method', 'payment_status', 'due_date', 'buyer', 'products']
+        fields = ['id', 'invoice', 'datetime', 'payment_method', 'payment_status', 'due_date', 'note', 'buyer', 'products']

@@ -2,12 +2,11 @@ from django.db import models
 from django.utils import timezone
 from products.models import Product
 from entities.models import Supplier, Buyer
-from datetime import date
+
 
 #
 # BASE CLASSES
 #
-
 class BaseIgog(models.Model):
     # Local Variables
     payment_method_cash = "cash"
@@ -28,21 +27,25 @@ class BaseIgog(models.Model):
         (payment_status_finished, "Finished")
     ]
 
+    retrieval_pickup = "pickup"
+    retrieval_delivery = "delivery"
+    retrieval_choices = [(retrieval_pickup, "Pickup"), (retrieval_delivery, "Delivery")]
+
     # Fields
+    invoice = models.TextField()
     datetime = models.DateTimeField(default=timezone.now)
     payment_method = models.TextField(choices=payment_method_choices, default=payment_method_cash)
     payment_status = models.TextField(choices=payment_status_choices, default=payment_status_notstarted)
-    due_date = models.DateField(null=True)
+    installment_duedate = models.DateField(null=True)
+    installment_fee = models.PositiveBigIntegerField(null=True)
+    note = models.TextField()
 
+    delivery_note = models.TextField()
+    retrieval_type = models.TextField(choices=retrieval_choices, default=retrieval_delivery)
+    retrieval_date = models.DateField(default=timezone.now)
 
-class BaseDeliveryNote(models.Model):
-    type_pickup = "pickup"
-    type_delivery = "delivery"
-    type_choices = [(type_pickup, "Pickup"), (type_delivery, "Delivery")]
-
-    # Fields
-    date = models.DateField(default=timezone.now)
-    retrieval_type = models.TextField(choices=type_choices, default=type_pickup)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 #
@@ -60,14 +63,12 @@ class Incoming(BaseIgog):
     def __str__(self):
         return self.datetime.strftime('%Y-%m-%d %H:%M')
 
+
 class IncomingProduct(models.Model):
     incoming = models.ForeignKey(Incoming, null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
-
-class IncomingDeliveryNote(BaseDeliveryNote):
-    incoming = models.OneToOneField(Incoming, on_delete=models.CASCADE, primary_key=True)
 
 
 #
@@ -88,6 +89,3 @@ class OutgoingProduct(models.Model):
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
-
-class OutgoingDeliveryNote(BaseDeliveryNote):
-    outgoing = models.OneToOneField(Outgoing, on_delete=models.CASCADE, primary_key=True)

@@ -13,7 +13,12 @@ from rest_framework.response import Response
 
 from entities.models import Supplier, Buyer
 from products.models import Product
-from .models import Incoming, IncomingProduct, Outgoing, OutgoingProduct
+from igog.models import (
+    Incoming,
+    IncomingProduct,
+    Outgoing,
+    OutgoingProduct
+)
 from igog.serializers import (
     IncomingListSerializer,
     IncomingDetailSerializer,
@@ -46,13 +51,18 @@ class IncomingList(APIView):
             incoming_date = datetime.strptime(req['incoming_date'], "%Y-%m-%d").date()
             incoming_time = datetime.strptime(req['incoming_time'], "%H:%M").time()
             incoming_datetime = datetime.combine(incoming_date, incoming_time)
-            duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
+            installment_duedate = datetime.strptime(req['installment_duedate'], "%Y-%m-%d").date()
             supplier = Supplier.objects.get(pk=req['supplier'])
             incoming = Incoming(
+                invoice=req['invoice'],
+                delivery_note=req['delivery_note'],
                 datetime=incoming_datetime,
                 payment_method=req['payment_method'],
                 payment_status=req['payment_status'],
-                due_date=duedate_date,
+                installment_duedate=installment_duedate,
+                installment_fee=req['installment_fee'],
+                retrieval_type=req['retrieval_type'],
+                note=req['note'],
                 supplier=supplier
             )
             incoming.save()
@@ -100,13 +110,18 @@ class OutgoingList(APIView):
             outgoing_date = datetime.strptime(req['outgoing_date'], "%Y-%m-%d").date()
             outgoing_time = datetime.strptime(req['outgoing_time'], "%H:%M").time()
             outgoing_datetime = datetime.combine(outgoing_date, outgoing_time)
-            duedate_date = datetime.strptime(req['duedate_date'], "%Y-%m-%d").date()
+            installment_duedate = datetime.strptime(req['installment_duedate'], "%Y-%m-%d").date()
             buyer = Buyer.objects.get(pk=req['buyer'])
             outgoing = Outgoing(
+                invoice=req['invoice'],
+                delivery_note=req['delivery_note'],
                 datetime=outgoing_datetime,
                 payment_method=req['payment_method'],
                 payment_status=req['payment_status'],
-                due_date=duedate_date,
+                installment_duedate=installment_duedate,
+                installment_fee=req['installment_fee'],
+                retrieval_type=req['retrieval_type'],
+                note=req['note'],
                 buyer=buyer
             )
             outgoing.save()
@@ -127,7 +142,8 @@ class OutgoingList(APIView):
                 "message": "Outgoing created"
             }
             return Response(response, status=status.HTTP_201_CREATED)
-        except:
+        except Exception as e:
+            print(e)
             response = {
                 "success": False,
                 "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,

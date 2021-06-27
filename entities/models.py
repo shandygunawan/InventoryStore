@@ -7,6 +7,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 class BaseEntity(models.Model):
     name = models.TextField()
     phone_number = PhoneNumberField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['name']
