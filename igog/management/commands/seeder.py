@@ -72,7 +72,7 @@ class Command(BaseCommand):
         for i in range(self.AMOUNT):
 
             installment_tenor = randint(1, 12)
-            installment_month = abs(installment_tenor - randint(0, 12))
+            installment_month = randint(0, installment_tenor)
 
             incoming = Incoming(
                 invoice=fake.swift(),
@@ -102,7 +102,7 @@ class Command(BaseCommand):
         for i in range(self.AMOUNT):
 
             installment_tenor = randint(1, 12)
-            installment_month = abs(installment_tenor - randint(0, 12))
+            installment_month = randint(0, installment_tenor)
 
             outgoing = Outgoing(
                 invoice=fake.swift(),
