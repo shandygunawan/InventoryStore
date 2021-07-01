@@ -8,7 +8,7 @@ from entities.models import Supplier, Buyer
 # BASE CLASSES
 #
 class BaseIgog(models.Model):
-    # Local Variables
+
     payment_method_cash = "cash"
     payment_method_transfer = "transfer"
     payment_method_giro = "giro"
@@ -18,14 +18,14 @@ class BaseIgog(models.Model):
         (payment_method_giro, "Giro")
     ]
 
-    payment_status_notstarted = "not_started"
-    payment_status_installment = "installment"
-    payment_status_finished = "finished"
-    payment_status_choices = [
-        (payment_status_notstarted, "Not Yet Started"),
-        (payment_status_installment, "Installment"),
-        (payment_status_finished, "Finished")
-    ]
+    # payment_status_notstarted = "not_started"
+    # payment_status_installment = "installment"
+    # payment_status_finished = "finished"
+    # payment_status_choices = [
+    #     (payment_status_notstarted, "Not Yet Started"),
+    #     (payment_status_installment, "Installment"),
+    #     (payment_status_finished, "Finished")
+    # ]
 
     retrieval_pickup = "pickup"
     retrieval_delivery = "delivery"
@@ -35,9 +35,10 @@ class BaseIgog(models.Model):
     invoice = models.TextField()
     datetime = models.DateTimeField(default=timezone.now)
     payment_method = models.TextField(choices=payment_method_choices, default=payment_method_cash)
-    payment_status = models.TextField(choices=payment_status_choices, default=payment_status_notstarted)
+    # payment_status = models.TextField(choices=payment_status_choices, default=payment_status_notstarted)
+    installment_tenor = models.PositiveIntegerField(null=True)
+    installment_month = models.PositiveIntegerField(null=True)
     installment_duedate = models.DateField(null=True)
-    installment_fee = models.PositiveBigIntegerField(null=True)
     note = models.TextField()
 
     delivery_note = models.TextField()

@@ -1,7 +1,7 @@
 import json
 
 from datetime import datetime, timedelta
-from django.db.models import Count
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from entities.models import Supplier, Buyer
 from products.models import Product
 from igog.models import (
+    BaseIgog,
     Incoming,
     IncomingProduct,
     Outgoing,
@@ -36,6 +37,9 @@ def toJsonAnnotate(chart):
     return json.dumps(list(chart), cls=DjangoJSONEncoder)
 
 
+#
+# CRUD
+#
 
 class IncomingList(APIView):
     queryset = Incoming.objects.all()
@@ -179,3 +183,24 @@ def dashboard(request):
 
     # return render(request, "igog/dashboard.html", context)
     return JsonResponse(context, safe=False)
+
+#
+# FINANCE
+#
+def quick_account(request):
+    # Incoming
+    incomings = Incoming.objects.filter( Q(payment_status=BaseIgog.payment_status_notstarted) |
+                                        Q(payment_status=BaseIgog.payment_status_installment) )
+
+    incoming_sum = 0
+    for incoming in incomings:
+        incoming_products = IncomingProduct.objects.filter(incoming=incoming)
+        for incoming_product in incoming_products:
+            incoming_sum = incoming_sum + (incoming_product.count * incoming_product.price_per_count)
+
+    outgoings = Outgoing.objects.filter( Q(payment_status=BaseIgog.payment_status_notstarted) |
+                                        Q(payment_status=BaseIgog.payment_status_installment) )
+
+
+
+    return JsonResponse({ "incoming_sum": incoming_sum }, safe=False)

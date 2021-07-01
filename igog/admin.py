@@ -12,8 +12,8 @@ class IncomingProductInline(admin.TabularInline):
 
 class IncomingAdmin(admin.ModelAdmin):
     list_display = ('invoice', 'delivery_note', 'datetime',
-                    'supplier', 'payment_method', 'payment_status',
-                    'installment_duedate', 'installment_fee',
+                    'supplier', 'payment_method',
+                    'installment_tenor', 'installment_month', 'installment_duedate',
                     'retrieval_type', 'retrieval_date',
                     'created_at', 'updated_at')
     inlines = [IncomingProductInline]
@@ -29,8 +29,8 @@ class OutgoingProductInline(admin.TabularInline):
 
 class OutgoingAdmin(admin.ModelAdmin):
     list_display = ('invoice', 'delivery_note', 'datetime',
-                    'buyer', 'payment_method', 'payment_status',
-                    'installment_duedate', 'installment_fee',
+                    'buyer', 'payment_method',
+                    'installment_tenor', 'installment_month', 'installment_duedate',
                     'retrieval_type', 'retrieval_date',
                     'created_at', 'updated_at')
     inlines = [OutgoingProductInline]

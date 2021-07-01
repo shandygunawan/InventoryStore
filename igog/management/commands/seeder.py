@@ -62,7 +62,6 @@ class Command(BaseCommand):
             )
             p.save()
 
-        len_payment_status = len(BaseIgog.payment_status_choices)
         len_payment_method = len(BaseIgog.payment_method_choices)
         len_retrieval_type = len(BaseIgog.retrieval_choices)
         len_products = Product.objects.all().count()
@@ -72,14 +71,17 @@ class Command(BaseCommand):
         print("Seeding Incoming...")
         for i in range(self.AMOUNT):
 
+            installment_tenor = randint(1, 12)
+            installment_month = abs(installment_tenor - randint(0, 12))
+
             incoming = Incoming(
                 invoice=fake.swift(),
                 delivery_note=fake.swift(),
                 datetime=fake.date_between(start_date='-30d', end_date='today'),
                 payment_method=BaseIgog.payment_method_choices[randint(0, len_payment_method-1)][0],
-                payment_status=BaseIgog.payment_status_choices[randint(0, len_payment_status-1)][0],
+                installment_tenor=installment_tenor,
+                installment_month=installment_month,
                 # installment_duedate use default (null)
-                installment_fee=randint(1000000, 10000000),
                 note=fake.paragraph(nb_sentences=5),
                 retrieval_type=BaseIgog.retrieval_choices[randint(0, len_retrieval_type-1)][0],
                 # retrieval_date uses default (now)
@@ -99,14 +101,17 @@ class Command(BaseCommand):
         print("Seeding Outgoing...")
         for i in range(self.AMOUNT):
 
+            installment_tenor = randint(1, 12)
+            installment_month = abs(installment_tenor - randint(0, 12))
+
             outgoing = Outgoing(
                 invoice=fake.swift(),
                 delivery_note=fake.swift(),
                 datetime=fake.date_between(start_date='-30d', end_date='today'),
                 payment_method=BaseIgog.payment_method_choices[randint(0, len_payment_method-1)][0],
-                payment_status=BaseIgog.payment_status_choices[randint(0, len_payment_status-1)][0],
+                installment_tenor=installment_tenor,
+                installment_month=installment_month,
                 # installment_duedate use default (null)
-                installment_fee=randint(1000000, 10000000),
                 note=fake.paragraph(nb_sentences=5),
                 retrieval_type=BaseIgog.retrieval_choices[randint(0, len_retrieval_type-1)][0],
                 # retrieval_date uses default (now)

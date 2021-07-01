@@ -20,7 +20,7 @@ class IncomingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Incoming
-        fields = ['id', 'invoice', 'datetime', 'payment_method', 'payment_status', 'supplier_name']
+        fields = ['id', 'invoice', 'datetime', 'payment_method', 'supplier_name']
 
 
 class IncomingDetailSerializer(serializers.ModelSerializer):
@@ -30,8 +30,8 @@ class IncomingDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incoming
         fields = ['id', 'invoice', 'delivery_note',
-                  'datetime', 'payment_method', 'payment_status',
-                  'installment_duedate', 'installment_fee',
+                  'datetime', 'payment_method',
+                  'installment_tenor', 'installment_month', 'installment_duedate',
                   'retrieval_type', 'retrieval_date',
                   'note', 'supplier', 'products',
                   'created_at', 'updated_at']
@@ -42,7 +42,7 @@ class OutgoingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Outgoing
-        fields = ['id', 'invoice', 'datetime', 'payment_method', 'payment_status', 'buyer_name']
+        fields = ['id', 'invoice', 'datetime', 'payment_method', 'buyer_name']
 
 
 class OutgoingDetailSerializer(serializers.ModelSerializer):
@@ -52,8 +52,8 @@ class OutgoingDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Outgoing
         fields = ['id', 'invoice', 'delivery_note',
-                  'datetime', 'payment_method', 'payment_status',
-                  'installment_duedate', 'installment_fee',
+                  'datetime', 'payment_method',
+                  'installment_tenor', 'installment_month', 'installment_duedate',
                   'retrieval_type', 'retrieval_date',
                   'note', 'buyer', 'products',
                   'created_at', 'updated_at']
