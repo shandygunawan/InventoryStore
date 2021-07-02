@@ -20,7 +20,7 @@ class IncomingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Incoming
-        fields = ['id', 'invoice', 'datetime', 'payment_method', 'supplier_name']
+        fields = ['id', 'invoice', 'delivery_note', 'datetime', 'payment_method', 'supplier_name']
 
 
 class IncomingDetailSerializer(serializers.ModelSerializer):
@@ -42,7 +42,7 @@ class OutgoingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Outgoing
-        fields = ['id', 'invoice', 'datetime', 'payment_method', 'buyer_name']
+        fields = ['id', 'invoice', 'delivery_note', 'datetime', 'payment_method', 'buyer_name']
 
 
 class OutgoingDetailSerializer(serializers.ModelSerializer):

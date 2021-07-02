@@ -68,7 +68,7 @@ class Command(BaseCommand):
         len_suppliers = Supplier.objects.all().count()
         len_buyers = Buyer.objects.all().count()
 
-        print("Seeding Incoming...")
+        print("Seeding Incomings...")
         for i in range(self.AMOUNT):
 
             installment_tenor = randint(1, 12)
@@ -77,6 +77,7 @@ class Command(BaseCommand):
             incoming = Incoming(
                 invoice=fake.swift(),
                 delivery_note=fake.swift(),
+                price_total=0,
                 datetime=fake.date_between(start_date='-30d', end_date='today'),
                 payment_method=BaseIgog.payment_method_choices[randint(0, len_payment_method-1)][0],
                 installment_tenor=installment_tenor,
@@ -98,7 +99,7 @@ class Command(BaseCommand):
                 )
                 incoming_product.save()
 
-        print("Seeding Outgoing...")
+        print("Seeding Outgoings...")
         for i in range(self.AMOUNT):
 
             installment_tenor = randint(1, 12)
@@ -107,6 +108,7 @@ class Command(BaseCommand):
             outgoing = Outgoing(
                 invoice=fake.swift(),
                 delivery_note=fake.swift(),
+                price_total=0,
                 datetime=fake.date_between(start_date='-30d', end_date='today'),
                 payment_method=BaseIgog.payment_method_choices[randint(0, len_payment_method-1)][0],
                 installment_tenor=installment_tenor,

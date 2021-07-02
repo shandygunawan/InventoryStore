@@ -18,15 +18,6 @@ class BaseIgog(models.Model):
         (payment_method_giro, "Giro")
     ]
 
-    # payment_status_notstarted = "not_started"
-    # payment_status_installment = "installment"
-    # payment_status_finished = "finished"
-    # payment_status_choices = [
-    #     (payment_status_notstarted, "Not Yet Started"),
-    #     (payment_status_installment, "Installment"),
-    #     (payment_status_finished, "Finished")
-    # ]
-
     retrieval_pickup = "pickup"
     retrieval_delivery = "delivery"
     retrieval_choices = [(retrieval_pickup, "Pickup"), (retrieval_delivery, "Delivery")]
@@ -34,8 +25,8 @@ class BaseIgog(models.Model):
     # Fields
     invoice = models.TextField()
     datetime = models.DateTimeField(default=timezone.now)
+    price_total = models.PositiveBigIntegerField(default=0)
     payment_method = models.TextField(choices=payment_method_choices, default=payment_method_cash)
-    # payment_status = models.TextField(choices=payment_status_choices, default=payment_status_notstarted)
     installment_tenor = models.PositiveIntegerField(null=True)
     installment_month = models.PositiveIntegerField(null=True)
     installment_duedate = models.DateField(null=True)

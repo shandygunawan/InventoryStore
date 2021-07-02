@@ -1,7 +1,7 @@
 import json
 
 from datetime import datetime, timedelta
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, F
 from django.db.models.functions import TruncDate
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
@@ -187,20 +187,112 @@ def dashboard(request):
 #
 # FINANCE
 #
-def quick_account(request):
-    # Incoming
-    incomings = Incoming.objects.filter( Q(payment_status=BaseIgog.payment_status_notstarted) |
-                                        Q(payment_status=BaseIgog.payment_status_installment) )
-
-    incoming_sum = 0
-    for incoming in incomings:
+def finance(request):
+    # Quick Account
+    qa_incoming_sum = 0
+    for incoming in Incoming.objects.filter(installment_month__lt=F('installment_tenor')):
         incoming_products = IncomingProduct.objects.filter(incoming=incoming)
         for incoming_product in incoming_products:
-            incoming_sum = incoming_sum + (incoming_product.count * incoming_product.price_per_count)
+            qa_incoming_sum = qa_incoming_sum + (incoming_product.count * incoming_product.price_per_count)
 
-    outgoings = Outgoing.objects.filter( Q(payment_status=BaseIgog.payment_status_notstarted) |
-                                        Q(payment_status=BaseIgog.payment_status_installment) )
+    qa_outgoing_sum = 0
+    for outgoing in Outgoing.objects.filter(installment_month__lt=F('installment_tenor')):
+        outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
+        for outgoing_product in outgoing_products:
+            qa_outgoing_sum = qa_outgoing_sum + (outgoing_product.count * outgoing_product.price_per_count)
 
 
+    # Incoming Prices per day in last week
+    incoming_last7days = Incoming.objects.filter(datetime__gte=datetime.today()-timedelta(days=7))
+    incoming_last7days_grouped = incoming_last7days.annotate(date=TruncDate('datetime')).values('date').annotate(c=Count('id'))
 
-    return JsonResponse({ "incoming_sum": incoming_sum }, safe=False)
+
+    # Number of payable almost finished (2 months)
+    payable_almost = 0
+    payable = Incoming.objects.filter(installment_month__lt=F('installment_tenor'))
+    payable_num = payable.count()
+    for incoming in payable:
+        if incoming.installment_tenor - incoming.installment_month == 1:
+            payable_almost += 1
+
+    # Top 10 products Sold
+    topproducts = []
+    for product in Product.objects.all():
+        outgoing_products = OutgoingProduct.objects.filter(product=product)
+        product_price_total = 0
+        for outgoing_product in outgoing_products:
+            product_price_total += (outgoing_product.count * outgoing_product.price_per_count)
+
+        topproducts.append({
+            "id": product.id,
+            "name": product.name,
+            "total_price": product_price_total
+        })
+    topproducts = sorted(topproducts, key=lambda k: k['total_price'], reverse=True)[:10]
+
+    # Top 10 outgoings
+    topoutgoings = []
+    for outgoing in Outgoing.objects.all():
+        outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
+        outgoing_price_total = 0
+        for outgoing_product in outgoing_products:
+            outgoing_price_total += (outgoing_product.count * outgoing_product.price_per_count)
+
+        topoutgoings.append({
+            "id": outgoing.id,
+            "invoice": outgoing.invoice,
+            "total_price": outgoing_price_total
+        })
+    topoutgoings = sorted(topoutgoings, key=lambda k: k['total_price'], reverse=True)[:10]
+
+    # Top 10 suppliers
+    topsuppliers = []
+    for supplier in Supplier.objects.all():
+        incomings = Incoming.objects.filter(supplier=supplier)
+        supplier_price_total = 0
+        for incoming in incomings:
+            incoming_price_total = 0
+            incoming_products = IncomingProduct.objects.filter(incoming=incoming)
+            for incoming_product in incoming_products:
+                incoming_price_total += (incoming_product.count * incoming_product.price_per_count)
+            supplier_price_total += incoming_price_total
+        topsuppliers.append({
+            "id": supplier.id,
+            "name": supplier.name,
+            "total_price": supplier_price_total
+        })
+    topsuppliers = sorted(topsuppliers, key=lambda k: k['total_price'], reverse=True)[:10]
+
+    # Top 10 Buyers
+    topbuyers = []
+    for buyer in Buyer.objects.all():
+        outgoings = Outgoing.objects.filter(buyer=buyer)
+        buyer_price_total = 0
+        for outgoing in outgoings:
+            outgoing_price_total = 0
+            outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
+            for outgoing_product in outgoing_products:
+                outgoing_price_total += (outgoing_product.count * outgoing_product.price_per_count)
+            buyer_price_total += outgoing_price_total
+        topbuyers.append({
+            "id": buyer.id,
+            "name": buyer.name,
+            "total_price": buyer_price_total
+        })
+    topbuyers = sorted(topbuyers, key=lambda k: k['total_price'], reverse=True)[:10]
+
+    return JsonResponse({
+        "quick_account": {
+            "incoming_sum": qa_incoming_sum,
+            "outgoing_sum": qa_outgoing_sum
+        },
+        "incoming_7days": list(incoming_last7days_grouped.values()),
+        "payable_almost": {
+            "almost": payable_almost,
+            "num": payable_num
+        },
+        "topproducts": topproducts,
+        "topoutgoings": topoutgoings,
+        "topsuppliers": topsuppliers,
+        "topbuyers": topbuyers
+    }, safe=False)
