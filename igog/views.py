@@ -191,21 +191,15 @@ def finance(request):
     # Quick Account
     qa_incoming_sum = 0
     for incoming in Incoming.objects.filter(installment_month__lt=F('installment_tenor')):
-        incoming_products = IncomingProduct.objects.filter(incoming=incoming)
-        for incoming_product in incoming_products:
-            qa_incoming_sum = qa_incoming_sum + (incoming_product.count * incoming_product.price_per_count)
+        qa_incoming_sum += incoming.price_total
 
     qa_outgoing_sum = 0
     for outgoing in Outgoing.objects.filter(installment_month__lt=F('installment_tenor')):
-        outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
-        for outgoing_product in outgoing_products:
-            qa_outgoing_sum = qa_outgoing_sum + (outgoing_product.count * outgoing_product.price_per_count)
-
+        qa_outgoing_sum += outgoing.price_total
 
     # Incoming Prices per day in last week
     incoming_last7days = Incoming.objects.filter(datetime__gte=datetime.today()-timedelta(days=7))
     incoming_last7days_grouped = incoming_last7days.annotate(date=TruncDate('datetime')).values('date').annotate(c=Count('id'))
-
 
     # Number of payable almost finished (2 months)
     payable_almost = 0
@@ -232,18 +226,12 @@ def finance(request):
 
     # Top 10 outgoings
     topoutgoings = []
-    for outgoing in Outgoing.objects.all():
-        outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
-        outgoing_price_total = 0
-        for outgoing_product in outgoing_products:
-            outgoing_price_total += (outgoing_product.count * outgoing_product.price_per_count)
-
+    for outgoing in Outgoing.objects.order_by("-price_total")[:10]:
         topoutgoings.append({
             "id": outgoing.id,
             "invoice": outgoing.invoice,
-            "total_price": outgoing_price_total
+            "total_price": outgoing.price_total
         })
-    topoutgoings = sorted(topoutgoings, key=lambda k: k['total_price'], reverse=True)[:10]
 
     # Top 10 suppliers
     topsuppliers = []
@@ -251,11 +239,7 @@ def finance(request):
         incomings = Incoming.objects.filter(supplier=supplier)
         supplier_price_total = 0
         for incoming in incomings:
-            incoming_price_total = 0
-            incoming_products = IncomingProduct.objects.filter(incoming=incoming)
-            for incoming_product in incoming_products:
-                incoming_price_total += (incoming_product.count * incoming_product.price_per_count)
-            supplier_price_total += incoming_price_total
+            supplier_price_total += incoming.price_total
         topsuppliers.append({
             "id": supplier.id,
             "name": supplier.name,
@@ -269,11 +253,7 @@ def finance(request):
         outgoings = Outgoing.objects.filter(buyer=buyer)
         buyer_price_total = 0
         for outgoing in outgoings:
-            outgoing_price_total = 0
-            outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
-            for outgoing_product in outgoing_products:
-                outgoing_price_total += (outgoing_product.count * outgoing_product.price_per_count)
-            buyer_price_total += outgoing_price_total
+            buyer_price_total += outgoing.price_total
         topbuyers.append({
             "id": buyer.id,
             "name": buyer.name,
