@@ -60,11 +60,12 @@ class IncomingList(APIView):
             incoming = Incoming(
                 invoice=req['invoice'],
                 delivery_note=req['delivery_note'],
+                price_total=0,
                 datetime=incoming_datetime,
                 payment_method=req['payment_method'],
-                payment_status=req['payment_status'],
                 installment_duedate=installment_duedate,
-                installment_fee=req['installment_fee'],
+                installment_tenor=req['installment_tenor'],
+                installment_paid=req['installment_paid'],
                 retrieval_type=req['retrieval_type'],
                 note=req['note'],
                 supplier=supplier
@@ -87,7 +88,8 @@ class IncomingList(APIView):
                 "message": "Incoming created"
             }
             return Response(response, status=status.HTTP_201_CREATED)
-        except:
+        except Exception as e:
+            print(e)
             response = {
                 "success": False,
                 "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -119,11 +121,12 @@ class OutgoingList(APIView):
             outgoing = Outgoing(
                 invoice=req['invoice'],
                 delivery_note=req['delivery_note'],
+                price_total=0,
                 datetime=outgoing_datetime,
                 payment_method=req['payment_method'],
-                payment_status=req['payment_status'],
                 installment_duedate=installment_duedate,
-                installment_fee=req['installment_fee'],
+                installment_tenor=req['installment_tenor'],
+                installment_paid=req['installment_paid'],
                 retrieval_type=req['retrieval_type'],
                 note=req['note'],
                 buyer=buyer

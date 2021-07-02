@@ -27,8 +27,8 @@ class BaseIgog(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     price_total = models.PositiveBigIntegerField(default=0)
     payment_method = models.TextField(choices=payment_method_choices, default=payment_method_cash)
-    installment_tenor = models.PositiveIntegerField(null=True)
-    installment_month = models.PositiveIntegerField(null=True)
+    installment_tenor = models.PositiveIntegerField(default=1)
+    installment_paid = models.PositiveIntegerField(default=0)
     installment_duedate = models.DateField(null=True)
     note = models.TextField()
 
