@@ -29,6 +29,7 @@ urlpatterns = [
     path('igog/', include('igog.urls')),
     path('products/', include('products.urls')),
     path('entities/', include('entities.urls')),
+    path('stock/', include('stock.urls')),
     path('api-accounts/', include('rest_framework.urls')),
     # path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

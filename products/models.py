@@ -11,5 +11,8 @@ class Product(models.Model):
 
     price_history = FieldHistoryTracker(['price'])
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name

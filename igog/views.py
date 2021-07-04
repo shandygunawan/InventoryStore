@@ -1,7 +1,7 @@
 import json
 
 from datetime import datetime, timedelta
-from django.db.models import Count, F, Sum
+from django.db.models import F, Sum
 from django.db.models.functions import TruncDate
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
@@ -164,33 +164,12 @@ class OutgoingDetail(generics.RetrieveAPIView):
     queryset = Outgoing.objects.all()
     serializer_class = OutgoingDetailSerializer
 
-def dashboard(request):
-    # == Queries ==
-    # Chart 1
-    chart1 = Incoming.objects.order_by("-total_price")[:5]
-
-    # Chart 2
-    chart2 = Incoming.objects.values('supplier_id').annotate(dcount=Count('supplier_id')).order_by('dcount')[:5]
-
-    # Chart 3
-    chart3 = Incoming.objects.filter(datetime__gte=datetime.now() - timedelta(days=5))
-    # print(chart3)
-    chart3 = chart3.annotate(day=TruncDate('datetime')).values('datetime').annotate(c=Count('id')).values('datetime', 'c')
-    # print(chart3)
-
-    context = {
-        "chart1": toJson(chart1),
-        "chart2": toJson(chart2),
-        "chart3": toJsonAnnotate(chart3)
-    }
-
-    # return render(request, "igog/dashboard.html", context)
-    return JsonResponse(context, safe=False)
 
 #
 # FINANCE
 #
 def finance(request):
+
     # Quick Account
     qa_incoming_sum = 0
     for incoming in Incoming.objects.filter(installment_paid__lt=F('installment_tenor')):
@@ -277,18 +256,24 @@ def finance(request):
     topbuyers = sorted(topbuyers, key=lambda k: k['total_price'], reverse=True)[:10]
 
     return JsonResponse({
-        "quick_account": {
-            "incoming_sum": qa_incoming_sum,
-            "outgoing_sum": qa_outgoing_sum
-        },
-        "incoming_7days": list(incoming_last7days),
-        "outgoing_7days": list(outgoing_last7days),
-        "payable_almost": {
-            "almost": payable_almost,
-            "num": payable_num
-        },
-        "topproducts": topproducts,
-        "topoutgoings": topoutgoings,
-        "topsuppliers": topsuppliers,
-        "topbuyers": topbuyers
+        "success": True,
+        "status_code": status.HTTP_200_OK,
+        "message": "Fetch Finance Overview successful",
+        "data": {
+            "quick_account": {
+                "incoming_sum": qa_incoming_sum,
+                "outgoing_sum": qa_outgoing_sum
+            },
+            "incoming_7days": list(incoming_last7days),
+            "outgoing_7days": list(outgoing_last7days),
+            "payable_almost": {
+                "almost": payable_almost,
+                "num": payable_num
+            },
+            "topproducts": topproducts,
+            "topoutgoings": topoutgoings,
+            "topsuppliers": topsuppliers,
+            "topbuyers": topbuyers
+        }
     }, safe=False)
+
