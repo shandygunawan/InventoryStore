@@ -1,7 +1,7 @@
 import json
 
 from datetime import datetime, timedelta
-from django.db.models import Count, F
+from django.db.models import Count, F, Sum
 from django.db.models.functions import TruncDate
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
@@ -201,8 +201,20 @@ def finance(request):
         qa_outgoing_sum += outgoing.price_total
 
     # Incoming Prices per day in last week
-    incoming_last7days = Incoming.objects.filter(datetime__gte=datetime.today()-timedelta(days=7))
-    incoming_last7days_grouped = incoming_last7days.annotate(date=TruncDate('datetime')).values('date').annotate(c=Count('id'))
+    incoming_last7days = Incoming.objects\
+        .filter(datetime__gte=datetime.today()-timedelta(days=7))\
+        .annotate(datetime_date=TruncDate('datetime'))\
+        .values('datetime_date')\
+        .annotate(total=Sum('price_total'))\
+        .order_by('datetime_date')
+
+    # Outgoing Prices per day in last week
+    outgoing_last7days = Outgoing.objects \
+        .filter(datetime__gte=datetime.today() - timedelta(days=7)) \
+        .annotate(datetime_date=TruncDate('datetime')) \
+        .values('datetime_date') \
+        .annotate(total=Sum('price_total'))\
+        .order_by('datetime_date')
 
     # Number of payable almost finished (2 months)
     payable_almost = 0
@@ -269,7 +281,8 @@ def finance(request):
             "incoming_sum": qa_incoming_sum,
             "outgoing_sum": qa_outgoing_sum
         },
-        "incoming_7days": list(incoming_last7days_grouped.values()),
+        "incoming_7days": list(incoming_last7days),
+        "outgoing_7days": list(outgoing_last7days),
         "payable_almost": {
             "almost": payable_almost,
             "num": payable_num

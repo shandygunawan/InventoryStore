@@ -72,7 +72,7 @@ class Command(BaseCommand):
         for i in range(self.AMOUNT):
 
             installment_tenor = randint(1, 12)
-            installment_month = randint(0, installment_tenor)
+            installment_paid = randint(0, installment_tenor)
 
             incoming = Incoming(
                 invoice=fake.swift(),
@@ -81,7 +81,7 @@ class Command(BaseCommand):
                 datetime=fake.date_between(start_date='-30d', end_date='today'),
                 payment_method=BaseIgog.payment_method_choices[randint(0, len_payment_method-1)][0],
                 installment_tenor=installment_tenor,
-                installment_month=installment_month,
+                installment_paid=installment_paid,
                 # installment_duedate use default (null)
                 note=fake.paragraph(nb_sentences=5),
                 retrieval_type=BaseIgog.retrieval_choices[randint(0, len_retrieval_type-1)][0],
@@ -103,7 +103,7 @@ class Command(BaseCommand):
         for i in range(self.AMOUNT):
 
             installment_tenor = randint(1, 12)
-            installment_month = randint(0, installment_tenor)
+            installment_paid = randint(0, installment_tenor)
 
             outgoing = Outgoing(
                 invoice=fake.swift(),
@@ -112,7 +112,7 @@ class Command(BaseCommand):
                 datetime=fake.date_between(start_date='-30d', end_date='today'),
                 payment_method=BaseIgog.payment_method_choices[randint(0, len_payment_method-1)][0],
                 installment_tenor=installment_tenor,
-                installment_month=installment_month,
+                installment_paid=installment_paid,
                 # installment_duedate use default (null)
                 note=fake.paragraph(nb_sentences=5),
                 retrieval_type=BaseIgog.retrieval_choices[randint(0, len_retrieval_type-1)][0],
