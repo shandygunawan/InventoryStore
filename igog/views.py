@@ -193,11 +193,11 @@ def dashboard(request):
 def finance(request):
     # Quick Account
     qa_incoming_sum = 0
-    for incoming in Incoming.objects.filter(installment_month__lt=F('installment_tenor')):
+    for incoming in Incoming.objects.filter(installment_paid__lt=F('installment_tenor')):
         qa_incoming_sum += incoming.price_total
 
     qa_outgoing_sum = 0
-    for outgoing in Outgoing.objects.filter(installment_month__lt=F('installment_tenor')):
+    for outgoing in Outgoing.objects.filter(installment_paid__lt=F('installment_tenor')):
         qa_outgoing_sum += outgoing.price_total
 
     # Incoming Prices per day in last week
@@ -206,10 +206,10 @@ def finance(request):
 
     # Number of payable almost finished (2 months)
     payable_almost = 0
-    payable = Incoming.objects.filter(installment_month__lt=F('installment_tenor'))
+    payable = Incoming.objects.filter(installment_paid__lt=F('installment_tenor'))
     payable_num = payable.count()
     for incoming in payable:
-        if incoming.installment_tenor - incoming.installment_month == 1:
+        if incoming.installment_tenor - incoming.installment_paid == 1:
             payable_almost += 1
 
     # Top 10 products Sold
