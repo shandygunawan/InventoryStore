@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from django.db.models import Sum, Value
+from django.db.models.functions import Coalesce, TruncDate
 from django.http import JsonResponse
 
 from rest_framework import status
@@ -104,6 +106,49 @@ def highFrequencyOutgoing(request):
             "data": list(freqlist)
         }, safe=False)
     except Exception as e:
+        #TODO: Add Logging to file
+        return JsonResponse({
+            "success": False,
+            "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            "message": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def productSoldperDay(request):
+    try:
+        req_delta = request.GET.get('delta')
+        req_product_id = request.GET.get('product_id')
+
+        outgoings = Outgoing.objects.filter(datetime__gte=datetime.today()-timedelta(days=int(req_delta)))
+
+        sold_dict = {}
+
+        for outgoing in outgoings:
+            date = str(outgoing.datetime.date())
+            outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing, product_id=int(req_product_id))
+
+            for outgoing_product in outgoing_products:
+                if date in sold_dict:
+                    sold_dict[str(outgoing.datetime.date())] += outgoing_product.count
+                else:
+                    sold_dict[str(outgoing.datetime.date())] = outgoing_product.count
+
+        sold_list = []
+        for sold_key in sold_dict:
+            sold_list.append({
+                "date": sold_key,
+                "count": sold_dict[sold_key]
+            })
+        sold_list = sorted(sold_list, key=lambda k: k['date'])
+
+        return JsonResponse({
+            "success": True,
+            "status_code": status.HTTP_200_OK,
+            "message": None,
+            "data": sold_list
+        }, safe=False)
+
+    except Exception as e:
+        #TODO: Add Logging to file
         return JsonResponse({
             "success": False,
             "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,

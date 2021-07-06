@@ -31,7 +31,7 @@ class IncomingDetailSerializer(serializers.ModelSerializer):
         model = Incoming
         fields = ['id', 'invoice', 'delivery_note',
                   'datetime', 'payment_method',
-                  'installment_tenor', 'installment_month', 'installment_duedate',
+                  'installment_tenor', 'installment_paid', 'installment_duedate',
                   'retrieval_type', 'retrieval_date',
                   'note', 'supplier', 'products',
                   'created_at', 'updated_at']
@@ -53,7 +53,7 @@ class OutgoingDetailSerializer(serializers.ModelSerializer):
         model = Outgoing
         fields = ['id', 'invoice', 'delivery_note',
                   'datetime', 'payment_method',
-                  'installment_tenor', 'installment_month', 'installment_duedate',
+                  'installment_tenor', 'installment_paid', 'installment_duedate',
                   'retrieval_type', 'retrieval_date',
                   'note', 'buyer', 'products',
                   'created_at', 'updated_at']
