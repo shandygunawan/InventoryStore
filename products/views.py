@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.fields.files import ImageFieldFile
 
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 
 from products.models import Product
@@ -20,7 +20,7 @@ class ProductList(generics.ListCreateAPIView):
 class ProductDetail(APIView):
     queryset = Product.objects.all()
 
-    def get(self, request, product_id, format=None):
+    def get(self, request, product_id):
         product = Product.objects.get(pk=product_id)
         histories_raw = product.get_price_history().order_by('-date_created').values()
         histories = []
@@ -39,3 +39,19 @@ class ProductDetail(APIView):
             'histories': histories
         }
         return JsonResponse(res, safe=False)
+
+    def delete(self, request, product_id):
+        try:
+            product = Product.objects.get(pk=product_id)
+            product.delete()
+            return JsonResponse({
+                "success": True,
+                "status_code": status.HTTP_200_OK,
+                "message": None
+            }, safe=False)
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
