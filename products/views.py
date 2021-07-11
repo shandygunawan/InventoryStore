@@ -40,6 +40,28 @@ class ProductDetail(APIView):
         }
         return JsonResponse(res, safe=False)
 
+    def put(self, request, product_id):
+        try:
+            req = json.loads(request.body)
+            product = Product.objects.get(pk=product_id)
+
+            product.name = req['name']
+            product.price = req['price']
+            product.stock = req['stock']
+            product.save()
+
+            return JsonResponse({
+                "success": True,
+                "status_code": status.HTTP_200_OK,
+                "message": None
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def delete(self, request, product_id):
         try:
             product = Product.objects.get(pk=product_id)
