@@ -77,6 +77,8 @@ class IncomingList(APIView):
                 incoming_product = IncomingProduct(
                     product=product,
                     incoming=incoming,
+                    productid=product.id,
+                    productname=product.name,
                     count=req_product['count'],
                     price_per_count=req_product['price_per_count']
                 )
@@ -138,6 +140,8 @@ class OutgoingList(APIView):
                 outgoing_product = OutgoingProduct(
                     product=product,
                     outgoing=outgoing,
+                    productid=product.id,
+                    productname=product.name,
                     count=req_product['count'],
                     price_per_count=req_product['price_per_count']
                 )

@@ -91,9 +91,12 @@ class Command(BaseCommand):
             incoming.save()
 
             for i in range(5):
+                product = Product.objects.all()[randint(1, len_products-1)]
                 incoming_product = IncomingProduct(
                     incoming=incoming,
-                    product=Product.objects.all()[randint(1, len_products-1)],
+                    product=product,
+                    productid=product.id,
+                    productname=product.name,
                     count=randint(1, 100),
                     price_per_count=randint(100000, 10000000)
                 )
@@ -122,9 +125,12 @@ class Command(BaseCommand):
             outgoing.save()
 
             for i in range(5):
+                product = Product.objects.all()[randint(1, len_products-1)]
                 outgoing_product = OutgoingProduct(
                     outgoing=outgoing,
-                    product=Product.objects.all()[randint(1, len_products-1)],
+                    product=product,
+                    productid=product.id,
+                    productname=product.name,
                     count=randint(1, 100),
                     price_per_count=randint(100000, 10000000)
                 )

@@ -39,11 +39,11 @@ def highFrequencyIncoming(request):
             incoming_products = IncomingProduct.objects.filter(incoming=incoming)
 
             for incoming_product in incoming_products:
-                if incoming_product.product.id in frequencies:
-                    frequencies[incoming_product.product.id]['count'] += incoming_product.count
+                if incoming_product.productid in frequencies:
+                    frequencies[incoming_product.productid]['count'] += incoming_product.count
                 else: # Not in
-                    frequencies[incoming_product.product.id] = {
-                       "name": incoming_product.product.name,
+                    frequencies[incoming_product.productid] = {
+                       "name": incoming_product.productname,
                        "count": incoming_product.count
                     }
 
@@ -82,11 +82,11 @@ def highFrequencyOutgoing(request):
             outgoing_products = OutgoingProduct.objects.filter(outgoing=outgoing)
 
             for outgoing_product in outgoing_products:
-                if outgoing_product.product.id in frequencies:
-                    frequencies[outgoing_product.product.id]['count'] += outgoing_product.count
+                if outgoing_product.productid in frequencies:
+                    frequencies[outgoing_product.productid]['count'] += outgoing_product.count
                 else: # Not in
-                    frequencies[outgoing_product.product.id] = {
-                       "name": outgoing_product.product.name,
+                    frequencies[outgoing_product.productid] = {
+                       "name": outgoing_product.productname,
                        "count": outgoing_product.count
                     }
 

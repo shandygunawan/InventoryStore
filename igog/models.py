@@ -59,6 +59,8 @@ class Incoming(BaseIgog):
 class IncomingProduct(models.Model):
     incoming = models.ForeignKey(Incoming, null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    productid = models.PositiveBigIntegerField()
+    productname = models.TextField()
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
 
@@ -79,5 +81,7 @@ class Outgoing(BaseIgog):
 class OutgoingProduct(models.Model):
     outgoing = models.ForeignKey(Outgoing, null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    productid = models.PositiveBigIntegerField()
+    productname = models.TextField()
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
