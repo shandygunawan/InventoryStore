@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 
 # from rest_framework_simplejwt.views import TokenObtainPairView
@@ -39,10 +41,60 @@ class AccountList(APIView):
             response = {
                 'success': True,
                 'status_code': status.HTTP_200_OK,
-                'message': 'Successfully fetched users',
+                'message': None,
                 'users': serializer.data
             }
             return Response(response, status=status.HTTP_200_OK)
+
+
+class AccountDetail(APIView):
+    serializer_class = AccountListSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, account_id):
+        try:
+            req = json.loads(request.body)
+            account = User.objects.get(pk=int(account_id))
+            account.name = req['name']
+            account.role = req['role']
+            account.phone_number = req['phone_number']
+            account.address = req['address']
+            account.salary = req['salary']
+
+            account.save()
+
+            response = {
+                "success": True,
+                "status_code": status.HTTP_200_OK,
+                "message": None
+            }
+            return Response(response, status.HTTP_200_OK)
+        except Exception as e:
+            response = {
+                "success": False,
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": str(e)
+            }
+            return Response(response, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def delete(self, request, account_id):
+        try:
+            account = User.objects.get(pk=account_id)
+            account.delete()
+
+            response = {
+                "success": True,
+                "status_code": status.HTTP_200_OK,
+                "message": None
+            }
+            return Response(response, status.HTTP_200_OK)
+        except Exception as e:
+            response = {
+                "success": False,
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": str(e)
+            }
+            return Response(response, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AccountRegistration(APIView):
@@ -60,7 +112,7 @@ class AccountRegistration(APIView):
             response = {
                 'success': True,
                 'status_code': status_code,
-                'message': 'User successfully registered!',
+                'message': None,
                 'user': serializer.data
             }
             return Response(response, status=status_code)

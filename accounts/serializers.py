@@ -7,7 +7,7 @@ from accounts.models import User
 class AccountListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("username", "role")
+        fields = ("id", "username", "role", "name", "phone_number", "address", "salary", "created_at")
 
 class AccountRegistrationSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -39,6 +39,8 @@ class AccountLoginSerializer(serializers.Serializer):
         password = data['password']
 
         user = authenticate(username=username, password=password)
+
+        print(user)
 
         if user is None:
             raise serializers.ValidationError("Invalid login credentials")
