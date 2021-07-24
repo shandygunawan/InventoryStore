@@ -12,10 +12,15 @@ class AccountListSerializer(serializers.ModelSerializer):
 class AccountRegistrationSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+    name = serializers.CharField()
+    role = serializers.CharField()
+    phone_number = serializers.CharField()
+    address = serializers.CharField()
+    salary = serializers.IntegerField()
 
     class Meta:
         model = User
-        fields = ("username", "password")
+        fields = ("username", "password", "name", "role", "phone_number", "address", "salary")
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

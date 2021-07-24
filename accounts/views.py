@@ -107,7 +107,7 @@ class AccountRegistration(APIView):
 
         if valid:
             serializer.save()
-            status_code = status.HTTP_201_CREATED
+            status_code = status.HTTP_200_OK
 
             response = {
                 'success': True,

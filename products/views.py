@@ -34,7 +34,7 @@ class ProductDetail(APIView):
                 "name": product.name,
                 "price": product.price,
                 "stock": product.stock,
-                "image": "http://localhost:8000" + product.image.url
+                "image": "http://" + request.get_host() + product.image.url
             },
             'histories': histories
         }
