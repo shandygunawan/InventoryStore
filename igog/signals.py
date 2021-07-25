@@ -1,5 +1,5 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, pre_delete
 
 from igog.models import (
     IncomingProduct,
@@ -13,7 +13,7 @@ def incoming_total_price_increase(sender, instance, created, **kwargs):
         instance.incoming.price_total += (instance.count * instance.price_per_count)
         instance.incoming.save()
 
-@receiver(post_delete, sender=IncomingProduct)
+@receiver(pre_delete, sender=IncomingProduct)
 def incoming_total_price_decrease(sender, instance, **kwargs):
     instance.incoming.price_total -= (instance.count * instance.price_per_count)
     instance.incoming.save()
@@ -24,7 +24,7 @@ def outgoing_total_price_increase(sender, instance, created, **kwargs):
         instance.outgoing.price_total += (instance.count * instance.price_per_count)
         instance.outgoing.save()
 
-@receiver(post_delete, sender=OutgoingProduct)
+@receiver(pre_delete, sender=OutgoingProduct)
 def outgoing_total_price_decrease(sender, instance, **kwargs):
     instance.outgoing.price_total -= (instance.count * instance.price_per_count)
     instance.outgoing.save()

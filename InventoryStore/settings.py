@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_seed',
     'corsheaders',
     'phonenumber_field',
+    'dbbackup',
 
 
     # Default Apps
@@ -193,3 +194,7 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
+
+# DBBACKUP
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': 'D:\\Other\\Backup\\'}
