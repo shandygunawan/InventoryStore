@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'igog.apps.IgogConfig',
     'entities.apps.EntitiesConfig',
     'accounts.apps.AccountsConfig',
+    'utils.apps.UtilsConfig',
 
     # Third Party Apps
     'rest_framework',
