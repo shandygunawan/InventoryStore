@@ -18,6 +18,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
+from oauth2client.service_account import ServiceAccountCredentials
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+
 """
 ============================
 SERVER HEALTH
@@ -76,7 +80,7 @@ class listBackup(APIView):
 @permission_classes((IsAuthenticated, ))
 def backupDb(request):
     try:
-        call_command("dbbackup", OUTPUT_PATH="/InventoryStoreBackups/")
+        call_command("dbbackup")
         response = {
             "success": True,
             "status_code": status.HTTP_200_OK,
