@@ -7,7 +7,7 @@ from . import views
 app_name='utils'
 urlpatterns = [
     path('checkhealth/', views.checkHealth, name="utils-checkhealth"),
-    path('backup/list/', views.listBackup.as_view(), name='utils-backuplist'),
+    path('backup/list/', views.listBackupDropbox, name='utils-backuplist'),
     path('backup/create/', views.backupDb, name="utils-backupcreate"),
     path('backup/info/', views.backupInfo, name="utils-backupinfo")
 ]

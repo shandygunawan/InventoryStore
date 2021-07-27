@@ -5,6 +5,7 @@ import datetime
 
 from os import listdir
 from os.path import isfile, join
+from io import StringIO
 
 from django.http import JsonResponse
 from django.core.management import call_command
@@ -37,7 +38,7 @@ def checkHealth(request):
 BACKUP DB
 ============================
 """
-class listBackup(APIView):
+class listBackupLocal(APIView):
     permission_classes = (IsAuthenticated, )
 
     # Get list Backup + Backup Info
@@ -71,6 +72,35 @@ class listBackup(APIView):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def listBackupDropbox(request):
+    backup_files_raw = StringIO()
+    call_command("listbackups", stdout=backup_files_raw)
+    
+    backup_files_raw = backup_files_raw.getvalue().split("\n")
+    backup_files = []
+    for i in range(1, len(backup_files_raw)-1):
+        backup_file = backup_files_raw[i].split(" ")
+
+        datetime_raw = backup_file[1] + " " + backup_file[2]
+        datetime_object = datetime.datetime.strptime(datetime_raw, "%m/%d/%y %H:%M:%S")
+
+        backup_files.append({
+            "name": backup_file[0],
+            "datetime": datetime_object.isoformat()
+        })
+
+    response = {
+        "success": True,
+        "status_code": status.HTTP_200_OK,
+        "message": None,
+        "data": backup_files
+    }
+
+    return Response(response, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def backupDb(request):
@@ -93,23 +123,23 @@ def backupDb(request):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def backupInfo(request):
-    backup_path = settings.DBBACKUP_STORAGE_OPTIONS['location']
-    backup_files = [f for f in listdir(backup_path) if isfile(join(backup_path, f))]
+    # backup_path = settings.DBBACKUP_STORAGE_OPTIONS['location']
+    # backup_files = [f for f in listdir(backup_path) if isfile(join(backup_path, f))]
 
-    created_times = []
+    # created_times = []
 
-    for backup_file in backup_files:
-        fname = pathlib.Path(backup_path + backup_file)
-        created_times.append(datetime.datetime.fromtimestamp(fname.stat().st_ctime))
+    # for backup_file in backup_files:
+    #     fname = pathlib.Path(backup_path + backup_file)
+    #     created_times.append(datetime.datetime.fromtimestamp(fname.stat().st_ctime))
 
-    created_times = sorted(created_times, reverse=True)
+    # created_times = sorted(created_times, reverse=True)
 
     response = {
         "success": True,
         "status_code": status.HTTP_200_OK,
         "message": None,
         "data": {
-            "time_createdbackup_latest_server": created_times[0],
+            # "time_createdbackup_latest_server": created_times[0],
             "time_autobackup": settings.AUTOBACKUP_TIME,
             "location_backup": settings.AUTOBACKUP_LOCATION
         }
