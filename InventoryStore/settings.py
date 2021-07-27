@@ -198,7 +198,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # DBBACKUP
 AUTOBACKUP_TIME = "23:59"
-AUTOBACKUP_LOCATION = ['server']
+AUTOBACKUP_LOCATION = ['dropbox']
 
 # System Storage
 # DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
@@ -207,6 +207,6 @@ AUTOBACKUP_LOCATION = ['server']
 # # Dropbox
 DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 DBBACKUP_STORAGE_OPTIONS = {
-    'oauth2_access_token': 'sl.A1UNTpgMPyBEARS6QV0z2lmQgwLKAXNlpc7JPuldjgUbAesichm-HNEJuaVeOLzpKtzKS2zi0VvfqQdZ0V3NuLMdEsQ1wdrfzkMWcUjkWIq9X6gbwgXbFEp3_OwK4IAxZeEGXKg',
+    'oauth2_access_token': open("keys/access_dropbox.txt", "r").read(),
     'root_path': "/backup/db"
 }
