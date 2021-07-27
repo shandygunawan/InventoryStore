@@ -1,6 +1,7 @@
 import json
 import os
 import pathlib
+import glob
 import datetime
 
 from os import listdir
@@ -18,11 +19,17 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
+import dropbox
+
+from utils.models import GlobalConfig
+
 """
 ============================
 SERVER HEALTH
 ============================
 """
+
+
 def checkHealth(request):
     response = {
         "success": True,
@@ -38,13 +45,26 @@ def checkHealth(request):
 BACKUP DB
 ============================
 """
+
+
 class listBackupLocal(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     # Get list Backup + Backup Info
     def get(self, request):
         backup_path = settings.DBBACKUP_STORAGE_OPTIONS['location']
-        backup_files = [f for f in listdir(backup_path) if isfile(join(backup_path, f))]
+        backup_filenames = [f for f in listdir(backup_path) if isfile(join(backup_path, f))]
+
+        backup_files = []
+        for backup_filename in backup_filenames:
+            fname = pathlib.Path(backup_path + backup_filename)
+            created_time = datetime.datetime.fromtimestamp(fname.stat().st_ctime)
+            backup_files.append({
+                "name": backup_filename,
+                "datetime": created_time
+            })
+
+        backup_files = sorted(backup_files, key=lambda k: k['datetime'], reverse=True)
 
         response = {
             "success": True,
@@ -66,46 +86,28 @@ class listBackupLocal(APIView):
         else:
             response = {
                 "success": False,
-                "message": "File not exist!",
+                "message": "File not exist",
                 "status_code": status.HTTP_400_BAD_REQUEST
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
-def listBackupDropbox(request):
-    backup_files_raw = StringIO()
-    call_command("listbackups", stdout=backup_files_raw)
-    
-    backup_files_raw = backup_files_raw.getvalue().split("\n")
-    backup_files = []
-    for i in range(1, len(backup_files_raw)-1):
-        backup_file = backup_files_raw[i].split(" ")
-
-        datetime_raw = backup_file[1] + " " + backup_file[2]
-        datetime_object = datetime.datetime.strptime(datetime_raw, "%m/%d/%y %H:%M:%S")
-
-        backup_files.append({
-            "name": backup_file[0],
-            "datetime": datetime_object.isoformat()
-        })
-
-    response = {
-        "success": True,
-        "status_code": status.HTTP_200_OK,
-        "message": None,
-        "data": backup_files
-    }
-
-    return Response(response, status=status.HTTP_200_OK)
-
-
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes((IsAuthenticated,))
 def backupDb(request):
     try:
+        # Use dbbackup to local
         call_command("dbbackup")
+
+        # Upload to Cloud (Dropbox)
+        list_of_backups = glob.glob(settings.DBBACKUP_STORAGE_OPTIONS['location'] + "*.dump")
+        latest_backup = max(list_of_backups, key=os.path.getctime) # Get latest backup for upload
+
+        backup_filename = latest_backup.split("\\")[-1]
+        dbx = dropbox.Dropbox(open("keys/access_dropbox.txt", "r").read()) # Instantiate dropbox
+        with open(latest_backup, 'rb') as f:
+            dbx.files_upload(f.read(), GlobalConfig.objects.get(key="autobackup_location").value + backup_filename)
+
         response = {
             "success": True,
             "status_code": status.HTTP_200_OK,
@@ -120,28 +122,20 @@ def backupDb(request):
         }
         return Response(response, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes((IsAuthenticated,))
 def backupInfo(request):
-    # backup_path = settings.DBBACKUP_STORAGE_OPTIONS['location']
-    # backup_files = [f for f in listdir(backup_path) if isfile(join(backup_path, f))]
-
-    # created_times = []
-
-    # for backup_file in backup_files:
-    #     fname = pathlib.Path(backup_path + backup_file)
-    #     created_times.append(datetime.datetime.fromtimestamp(fname.stat().st_ctime))
-
-    # created_times = sorted(created_times, reverse=True)
+    autobackup_time = GlobalConfig.objects.get(key="autobackup_time").value
+    autobackup_location = GlobalConfig.objects.get(key="autobackup_location").value
 
     response = {
         "success": True,
         "status_code": status.HTTP_200_OK,
         "message": None,
         "data": {
-            # "time_createdbackup_latest_server": created_times[0],
-            "time_autobackup": settings.AUTOBACKUP_TIME,
-            "location_backup": settings.AUTOBACKUP_LOCATION
+            "autobackup_time": autobackup_time,
+            "autobackup_location": autobackup_location
         }
     }
     return Response(response, status.HTTP_200_OK)

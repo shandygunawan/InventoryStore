@@ -17,6 +17,7 @@ from igog.models import (
     IncomingProduct,
     Outgoing, OutgoingProduct
 )
+from utils.models import GlobalConfig
 
 class Command(BaseCommand):
     help = "Seed Database"
@@ -29,6 +30,11 @@ class Command(BaseCommand):
         fake.add_provider(VehicleProvider)
         seed(1)
         seeder = Seed.seeder()
+
+        # Setting Global Config
+        print("Setting up Global Config...")
+        GlobalConfig(key="autobackup_time", value="23.59").save()
+        GlobalConfig(key="autobackup_location", value="/backup/db/").save()
 
         # Add Supplier
         print("Seeding suppliers...")

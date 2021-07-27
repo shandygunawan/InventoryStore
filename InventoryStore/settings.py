@@ -196,17 +196,13 @@ SIMPLE_JWT = {
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
 
-# DBBACKUP
-AUTOBACKUP_TIME = "23:59"
-AUTOBACKUP_LOCATION = ['dropbox']
-
 # System Storage
-# DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-# DBBACKUP_STORAGE_OPTIONS = {'location': './backup/db/'}
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': './backup/db/'}
 
 # # Dropbox
-DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-DBBACKUP_STORAGE_OPTIONS = {
-    'oauth2_access_token': open("keys/access_dropbox.txt", "r").read(),
-    'root_path': "/backup/db"
-}
+# DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+# DBBACKUP_STORAGE_OPTIONS = {
+#     'oauth2_access_token': open("keys/access_dropbox.txt", "r").read(),
+#     'root_path': "/backup/db"
+# }
