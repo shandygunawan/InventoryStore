@@ -17,16 +17,11 @@ djangorestframework-simplejwt==4.7.1
 dropbox==11.14.0
 Faker==8.2.0
 faker-vehicle==0.2.0
-google-api-core==1.31.0
-google-api-python-client==2.14.0
-google-auth==1.33.1
-google-auth-httplib2==0.1.0
 googleapis-common-protos==1.53.0
 httplib2==0.19.1
 idna==3.2
 importlib-metadata==4.5.0
 Markdown==3.3.4
-oauth2client==4.1.3
 packaging==21.0
 phonenumbers==8.12.26
 Pillow==8.2.0
@@ -34,7 +29,6 @@ ply==3.11
 protobuf==3.17.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-PyDrive==1.3.1
 PyJWT==2.1.0
 pyparsing==2.4.7
 python-dateutil==2.8.1

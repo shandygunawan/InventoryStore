@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'phonenumber_field',
     'dbbackup',
-    'gdstorage',
 
 
     # Default Apps

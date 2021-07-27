@@ -5,7 +5,6 @@ import datetime
 
 from os import listdir
 from os.path import isfile, join
-from io import StringIO
 
 from django.http import JsonResponse
 from django.core.management import call_command
@@ -17,10 +16,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-
-from oauth2client.service_account import ServiceAccountCredentials
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
 
 """
 ============================
