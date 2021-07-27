@@ -42,6 +42,38 @@ def checkHealth(request):
 
 """
 ============================
+GLOBAL CONFIG
+============================
+"""
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def setGlobalConfig(request):
+    req = json.loads(request.body)
+
+    changed_keys = []
+    for key in req.keys():
+        try:
+            config = GlobalConfig.objects.get(key=key)
+        except GlobalConfig.DoesNotExist:
+            config = None
+
+        if config:
+            config.value = req[key]
+            config.save()
+            changed_keys.append(key)
+
+    response = {
+        "success": True,
+        "status_code": status.HTTP_200_OK,
+        "message": None,
+        "data": changed_keys
+    }
+    return Response(response, status=status.HTTP_200_OK)
+
+
+"""
+============================
 BACKUP DB
 ============================
 """
