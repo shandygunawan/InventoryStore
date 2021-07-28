@@ -3,6 +3,7 @@ import os
 import pathlib
 import glob
 import datetime
+import sys
 
 from os import listdir
 from os.path import isfile, join
@@ -21,6 +22,9 @@ from rest_framework.decorators import api_view, permission_classes
 
 import dropbox
 
+from igog.models import Incoming, Outgoing
+from products.models import Product
+from entities.models import Supplier, Buyer
 from utils.models import GlobalConfig
 
 """
@@ -70,6 +74,62 @@ def setGlobalConfig(request):
         "data": changed_keys
     }
     return Response(response, status=status.HTTP_200_OK)
+
+
+"""
+============================
+DB INFO
+============================
+"""
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def dbInfo(request):
+    try:
+        # Getting object count
+        count_incoming = Incoming.objects.count()
+        count_outgoing = Outgoing.objects.count()
+        count_product = Product.objects.count()
+        count_supplier = Supplier.objects.count()
+        count_buyer = Buyer.objects.count()
+
+        # Get size per table
+        size_incoming = sys.getsizeof(Incoming()) * count_incoming
+        size_outgoing = sys.getsizeof(Incoming()) * count_outgoing
+        size_product = sys.getsizeof(Incoming()) * count_product
+        size_supplier = sys.getsizeof(Incoming()) * count_supplier
+        size_buyer = sys.getsizeof(Incoming()) * count_buyer
+
+        response = {
+            "success": True,
+            "status_code": status.HTTP_200_OK,
+            "message": None,
+            "data": {
+                "count": {
+                    "incoming": count_incoming,
+                    "outgoing": count_outgoing,
+                    "product": count_product,
+                    "supplier": count_supplier,
+                    "buyer": count_buyer
+                },
+                "size": {
+                    "incoming": size_incoming,
+                    "outgoing": size_outgoing,
+                    "product": size_product,
+                    "supplier": size_supplier,
+                    "buyer": size_buyer
+                }
+            }
+        }
+
+        return Response(response, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        response = {
+            "success": False,
+            "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            "message": str(e)
+        }
+        return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 """
