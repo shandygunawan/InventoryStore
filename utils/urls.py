@@ -11,5 +11,7 @@ urlpatterns = [
     path('db/info/', views.dbInfo, name="utils-dbinfo"),
     path('backup/list/', views.listBackupLocal.as_view(), name='utils-backuplist'),
     path('backup/create/', views.backupDb, name="utils-backupcreate"),
-    path('backup/info/', views.backupInfo, name="utils-backupinfo")
+    path('backup/info/', views.backupInfo, name="utils-backupinfo"),
+    path('backup/restore/local/', views.restoreDbFromLocal, name="utils-backuprestorelocal"),
+    path('backup/restore/upload/', views.restoreDbFromUpload, name="utils-backuprestoreupload")
 ]

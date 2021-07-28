@@ -192,7 +192,7 @@ def backupDb(request):
         call_command("dbbackup")
 
         # Upload to Cloud (Dropbox)
-        list_of_backups = glob.glob(settings.DBBACKUP_STORAGE_OPTIONS['location'] + "*.dump")
+        list_of_backups = glob.glob(settings.DBBACKUP_STORAGE_OPTIONS['location'] + "*.psql")
         latest_backup = max(list_of_backups, key=os.path.getctime) # Get latest backup for upload
 
         backup_filename = latest_backup.split("\\")[-1]
@@ -229,5 +229,49 @@ def backupInfo(request):
             "autobackup_time": autobackup_time,
             "autobackup_location": autobackup_location
         }
+    }
+    return Response(response, status.HTTP_200_OK)
+
+
+"""
+============================
+RESTORE DB
+============================
+"""
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def restoreDbFromLocal(request):
+    try:
+        req = json.loads(request.body)
+        backup_filepath = settings.DBBACKUP_STORAGE_OPTIONS['location'] + req['backup_filename']
+
+        call_command("flush")
+        call_command("dbrestore", input_path=backup_filepath, interactive=False)
+
+        response = {
+            "success": True,
+            "status_code": status.HTTP_200_OK,
+            "message": None
+        }
+        return Response(response, status.HTTP_200_OK)
+
+    except Exception as e:
+        response = {
+            "success": False,
+            "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            "message": str(e)
+        }
+        return Response(response, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def restoreDbFromUpload(request):
+    print(request.body)
+
+    response = {
+        "success": True,
+        "status_code": status.HTTP_200_OK,
+        "message": None
     }
     return Response(response, status.HTTP_200_OK)
