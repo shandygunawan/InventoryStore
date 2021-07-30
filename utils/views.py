@@ -245,7 +245,7 @@ def restoreDbFromLocal(request):
         req = json.loads(request.body)
         backup_filepath = settings.DBBACKUP_STORAGE_OPTIONS['location'] + req['backup_filename']
 
-        call_command("flush")
+        call_command("flush", interactive=False)
         call_command("dbrestore", input_path=backup_filepath, interactive=False)
 
         response = {
