@@ -267,7 +267,16 @@ def restoreDbFromLocal(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def restoreDbFromUpload(request):
-    print(request.body)
+
+    # Save uploaded file
+    file_path = settings.DBBACKUP_STORAGE_OPTIONS['location'] + request.FILES['file'].name
+    with open(file_path, "wb+") as outfile:
+        for chunk in request.FILES['file'].chunks():
+            outfile.write(chunk)
+
+    # Restore
+    call_command("dbrestore", input_path=file_path, interactive=False)
+    os.remove(file_path)
 
     response = {
         "success": True,
