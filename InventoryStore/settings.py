@@ -214,3 +214,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': './backup/db/'}
 
+
+# CRONJOBS
+CRONJOBS = [
+    ("* * * * *", 'utils.cron.autobackup')
+]
