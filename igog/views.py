@@ -50,7 +50,7 @@ class IncomingList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        try:
+        # try:
             req = json.loads(request.body)
             incoming_date = datetime.strptime(req['incoming_date'], "%Y-%m-%d").date()
             incoming_time = datetime.strptime(req['incoming_time'], "%H:%M").time()
@@ -90,14 +90,14 @@ class IncomingList(APIView):
                 "message": "Incoming created"
             }
             return Response(response, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            print(e)
-            response = {
-                "success": False,
-                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
-                "message": "Outgoing Created Fail"
-            }
-            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # except Exception as e:
+        #     print(e)
+        #     response = {
+        #         "success": False,
+        #         "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #         "message": "Outgoing Created Fail"
+        #     }
+        #     return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class IncomingDetail(generics.RetrieveAPIView):
