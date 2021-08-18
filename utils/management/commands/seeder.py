@@ -33,7 +33,6 @@ class Command(BaseCommand):
 
         # Setting Global Config
         print("Setting up Global Config...")
-        GlobalConfig(key="autobackup_time", value="23.59").save()
         GlobalConfig(key="autobackup_location", value="/backup/db/").save()
 
         # Add Supplier

@@ -218,7 +218,6 @@ def backupDb(request):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def backupInfo(request):
-    autobackup_time = GlobalConfig.objects.get(key="autobackup_time").value
     autobackup_location = GlobalConfig.objects.get(key="autobackup_location").value
 
     response = {
@@ -226,7 +225,6 @@ def backupInfo(request):
         "status_code": status.HTTP_200_OK,
         "message": None,
         "data": {
-            "autobackup_time": autobackup_time,
             "autobackup_location": autobackup_location
         }
     }
