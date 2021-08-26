@@ -40,7 +40,6 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     'rest_framework',
-    'field_history',
     'django_seed',
     'corsheaders',
     'phonenumber_field',
