@@ -63,6 +63,7 @@ class IncomingProduct(models.Model):
     productname = models.TextField()
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
+    num_return = models.PositiveBigIntegerField(default=0)
 
 
 #
@@ -85,3 +86,4 @@ class OutgoingProduct(models.Model):
     productname = models.TextField()
     count = models.PositiveBigIntegerField()
     price_per_count = models.PositiveBigIntegerField()
+    num_return = models.PositiveBigIntegerField(default=0)

@@ -96,14 +96,19 @@ class Command(BaseCommand):
             incoming.save()
 
             for i in range(5):
+
+                count = randint(1, 100)
+                num_return = randint(0, count)
+
                 product = Product.objects.all()[randint(1, len_products-1)]
                 incoming_product = IncomingProduct(
                     incoming=incoming,
                     product=product,
                     productid=product.id,
                     productname=product.name,
-                    count=randint(1, 100),
-                    price_per_count=randint(100000, 10000000)
+                    count=count,
+                    price_per_count=randint(100000, 10000000),
+                    num_return=num_return
                 )
                 incoming_product.save()
 
@@ -130,13 +135,17 @@ class Command(BaseCommand):
             outgoing.save()
 
             for i in range(5):
+                count = randint(1, 100)
+                num_return = randint(0, count)
+
                 product = Product.objects.all()[randint(1, len_products-1)]
                 outgoing_product = OutgoingProduct(
                     outgoing=outgoing,
                     product=product,
                     productid=product.id,
                     productname=product.name,
-                    count=randint(1, 100),
-                    price_per_count=randint(100000, 10000000)
+                    count=count,
+                    price_per_count=randint(100000, 10000000),
+                    num_return=num_return
                 )
                 outgoing_product.save()
